@@ -46,10 +46,11 @@ export async function SignIn(
       sessionCookie.value,
       sessionCookie.attributes
     );
+
   } catch (err) {
     console.error("Login error:", err);
     return { error: "Terjadi kesalahan internal server" };
   }
 
-  return redirect("/dashboard/sign-in");
+  return redirect("/dashboard");
 }
