@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+
+enum RoleUser {
+  superadmin
+  customer
+
+  @@map("role_user")
+}
+
+enum StockProduct {
+  ready
+  preorder
+
+  @@map("stock_product")
+}
+
+enum StatusOrder {
+  pending
+  success
+  failed
+
+  @@map("status_order")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String   @unique
+  password  String
+  role      RoleUser @default(customer) @map("type")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  orders Order[]
+  sessions  Session[]
+
+  @@map("users")
+}
+
+model Brand {
+  id   Int     @id @default(autoincrement())
+  logo String?
+  name String
+
+  products Product[]
+
+  @@map("brands")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  products Product[]
+
+  @@map("locations")
+}
+
+model Product {
+  id          Int          @id @default(autoincrement())
+  brandId     Int          @map("brand_id")
+  categoryId  Int          @map("category_id")
+  locationId  Int          @map("location_id")
+  name        String
+  description String       @db.Text 
+  price       Int
+  stock       StockProduct
+  image       String
+
+  brand      Brand          @relation(fields: [brandId], references: [id])
+  category   Category       @relation(fields: [categoryId], references: [id])
+  location   Location       @relation(fields: [locationId], references: [id])
+  orderItems OrderProduct[]
+
+  @@map("products")
+}
+
+model Order {
+  id     Int         @id @default(autoincrement())
+  code   Int         @unique
+  userId Int         @map("user_id")
+  total  Int
+  status StatusOrder @default(pending)
+
+  user        User           @relation(fields: [userId], references: [id])
+  orderDetail OrderDetail? 
+  orderItems  OrderProduct[]
+
+  @@map("orders")
+}
+
+model OrderDetail {
+  id         Int    @id @default(autoincrement())
+  orderId    Int    @unique @map("order_id")
+  name       String
+  phone      String
+  address    String
+  city       String
+  postalCode String @map("postal_code")
+  notes      String?
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("orderDetails")
+}
+
+model OrderProduct {
+  id        Int @id @default(autoincrement())
+  productId Int @map("product_id")
+  orderId   Int @map("order_id")
+  subtotal  Int
+  quantity  Int
+
+  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+
+  @@map("orders_product")
+}
+
+model Session {
+  id        String   @id
+  userId    Int      @map("user_id")
+  expiresAt DateTime
+
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
