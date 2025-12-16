@@ -35,7 +35,7 @@ model User {
   username  String
   email     String   @unique
   password  String
-  role      RoleUser @default(customer) @map("type")
+  role      RoleUser @default(customer) 
   createdAt DateTime @default(now()) @map("created_at")
 
   orders Order[]
