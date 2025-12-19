@@ -1,0 +1,6 @@
+import React from "react";
+import { DataTableSkeleton } from "../_components/data-table-skeleton";
+
+export default function loading() {
+  return <DataTableSkeleton />;
+}

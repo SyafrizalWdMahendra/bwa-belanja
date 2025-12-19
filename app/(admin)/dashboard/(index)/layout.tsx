@@ -37,6 +37,7 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
+
       <SidebarInset>
         <Header />
         <main className="py-4 px-6">{children}</main>

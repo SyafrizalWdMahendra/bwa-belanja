@@ -26,11 +26,9 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconCircleCheckFilled,
   IconDotsVertical,
   IconGripVertical,
   IconLayoutColumns,
-  IconLoader,
   IconPlus,
   IconTrendingUp,
 } from "@tabler/icons-react";
@@ -100,18 +98,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export const schema = z.object({
   id: z.number(),
   name: z.string(),
-  //   type: z.string(),
-  //   status: z.string(),
-  //   target: z.string(),
-  //   limit: z.string(),
-  //   reviewer: z.string(),
 });
 
-// Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
     id,
@@ -262,6 +256,24 @@ export function DataTable({
     [data]
   );
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const isSuccess = searchParams.get("success");
+
+  const toastShownRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (isSuccess && !toastShownRef.current) {
+      toast.success("Category created successfully!");
+      toastShownRef.current = true;
+
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("success");
+      window.history.replaceState({}, "", newUrl.toString());
+    }
+  }, [isSuccess]);
+
   const table = useReactTable({
     data,
     columns,
@@ -366,10 +378,12 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
-            <IconPlus />
-            <span className="hidden lg:inline">Add Section</span>
-          </Button>
+          <Link href="/dashboard/categories/create" className="sm:inline-flex">
+            <Button size="sm" className="cursor-pointer">
+              <IconPlus />
+              <span className="hidden lg:inline">Add Categories</span>
+            </Button>
+          </Link>
         </div>
       </div>
       <TabsContent
