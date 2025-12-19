@@ -4,7 +4,7 @@ import { ActionResult } from "@/types";
 import { redirect } from "next/navigation";
 import { categorySchema } from "./definition";
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache"; // 1. Import ini
+import { revalidatePath } from "next/cache";
 
 export async function postCategory(
   _: unknown,
@@ -34,5 +34,47 @@ export async function postCategory(
 
   revalidatePath("/dashboard/categories");
 
-  return redirect("/dashboard/categories?success=true");
+  return redirect("/dashboard/categories?created=true");
+}
+
+export async function getCategoryById(id: number) {
+  const category = await prisma.category.findUnique({
+    where: { id },
+  });
+  return category;
+}
+
+export async function updateCategory(
+  id: number,
+  prevState: any,
+  formData: FormData
+): Promise<ActionResult> {
+  const rawData = Object.fromEntries(formData.entries());
+
+  const updateSchema = categorySchema.omit({ id: true });
+
+  const validated = updateSchema.safeParse(rawData);
+
+  if (!validated.success) {
+    return {
+      error: validated.error.issues[0].message,
+    };
+  }
+
+  try {
+    await prisma.category.update({
+      where: { id },
+      data: {
+        name: validated.data.name,
+      },
+    });
+  } catch (error) {
+    console.error("Update error:", error);
+    return {
+      error: "Failed to update category.",
+    };
+  }
+
+  revalidatePath("/dashboard/categories");
+  return redirect("/dashboard/categories?updated=true");
 }

@@ -18,10 +18,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { SignIn } from "../lib/actions";
-import { ActionResult } from "@/types";
 import { Loader2, AlertCircle } from "lucide-react";
-
-const initialState: ActionResult = { error: "" };
+import { initialState } from "@/lib/utils";
 
 export default function FormSignIn() {
   const [state, formAction, isPending] = useActionState(SignIn, initialState);

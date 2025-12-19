@@ -4,10 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useActionState } from "react";
 import { Logout } from "../lib/actions";
-
-const initialState = {
-  error: "",
-};
+import { initialState } from "@/lib/utils";
 
 export default function FormLogout() {
   const [state, formAction] = useActionState(Logout, initialState);

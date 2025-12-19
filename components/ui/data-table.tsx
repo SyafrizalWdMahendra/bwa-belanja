@@ -100,11 +100,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-
-export const schema = z.object({
-  id: z.number(),
-  name: z.string(),
-});
+import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/definition";
+import { DataTableProps } from "@/lib/utils";
 
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
@@ -125,7 +122,7 @@ function DragHandle({ id }: { id: number }) {
   );
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+export const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   {
     id: "drag",
     header: () => null,
@@ -178,31 +175,35 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+      const category = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <Link href={`/dashboard/categories/edit/${category.id}`}>
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+            </Link>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
 ];
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row }: { row: Row<z.infer<typeof categorySchema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   });
@@ -228,10 +229,9 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 }
 
 export function DataTable({
+  columns,
   data: initialData,
-}: {
-  data: z.infer<typeof schema>[];
-}) {
+}: DataTableProps<z.infer<typeof categorySchema>, unknown>) {
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -259,20 +259,28 @@ export function DataTable({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const isSuccess = searchParams.get("success");
+  const isCreated = searchParams.get("created");
+  const isUpdated = searchParams.get("updated");
 
   const toastShownRef = React.useRef(false);
 
   React.useEffect(() => {
-    if (isSuccess && !toastShownRef.current) {
+    if (isCreated && !toastShownRef.current) {
       toast.success("Category created successfully!");
       toastShownRef.current = true;
 
       const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("success");
+      newUrl.searchParams.delete("created");
+      window.history.replaceState({}, "", newUrl.toString());
+    } else if (isUpdated && !toastShownRef.current) {
+      toast.success("Category updated successfully!");
+      toastShownRef.current = true;
+
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("updated");
       window.history.replaceState({}, "", newUrl.toString());
     }
-  }, [isSuccess]);
+  }, [isCreated, isUpdated]);
 
   const table = useReactTable({
     data,
@@ -558,7 +566,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: z.infer<typeof categorySchema> }) {
   const isMobile = useIsMobile();
 
   return (

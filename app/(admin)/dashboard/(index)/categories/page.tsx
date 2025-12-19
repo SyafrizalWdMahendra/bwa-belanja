@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { categoryColumns, DataTable } from "@/components/ui/data-table";
 import { getCategories } from "./lib/data";
 
 export default async function CategoriesPage() {
@@ -6,7 +6,7 @@ export default async function CategoriesPage() {
 
   return (
     <>
-      <DataTable data={data} />
+      <DataTable columns={categoryColumns} data={data} />
     </>
   );
 }
