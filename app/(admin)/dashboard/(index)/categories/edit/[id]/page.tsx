@@ -1,16 +1,14 @@
-import React, { Suspense } from "react";
 import { notFound } from "next/navigation";
-import FormUpdateCategory from "../../../_components/form-update-category";
+import FormUpdateCategory from "../../_components/form-update-category";
 import { getCategoryById } from "../../lib/actions";
 import { PageProps } from "../../lib/utils";
-import { FormUpdateCategorySkeleton } from "../../../_components/form-update-category-skeleton";
 
 export default async function CategoryEdit({ params }: PageProps) {
   const { id } = await params;
 
-  const category = await getCategoryById(Number(id));
+  const data = await getCategoryById(Number(id));
 
-  if (!category) {
+  if (!data) {
     return notFound();
   }
 
@@ -22,7 +20,7 @@ export default async function CategoryEdit({ params }: PageProps) {
           Make changes to your category here.
         </p>
       </div>
-      <FormUpdateCategory data={category} />
+      <FormUpdateCategory data={data} />
     </div>
   );
 }

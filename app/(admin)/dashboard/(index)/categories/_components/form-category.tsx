@@ -1,8 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,29 +10,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { updateCategory } from "../categories/lib/actions";
-import {
-  CategoryFormValues,
-  categorySchema,
-} from "../categories/lib/definition";
-import { FormUpdateCategoryProps } from "../categories/lib/utils";
+import { useActionState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle } from "lucide-react";
 import { initialState } from "@/lib/utils";
+import { CategoryFormValues, categorySchema } from "../lib/definition";
+import { postCategory } from "../lib/actions";
 
-export default function FormUpdateCategory({ data }: FormUpdateCategoryProps) {
-  const updateActionWithId = async (state: any, formData: FormData) => {
-    return updateCategory(data.id, state, formData);
-  };
-
+export default function FormCategory() {
   const [state, formAction, isPending] = useActionState(
-    updateActionWithId,
+    postCategory,
     initialState
   );
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: data.name,
+      name: "",
     },
   });
 
@@ -44,9 +37,10 @@ export default function FormUpdateCategory({ data }: FormUpdateCategoryProps) {
         action={formAction}
         className="space-y-8 p-6 border rounded-lg shadow-sm"
       >
-        {state?.error && (
-          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md border border-red-200">
-            Error: {state.error}
+        {state.error && (
+          <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md flex items-center gap-2">
+            <AlertCircle className="h-4 w-4" />
+            <span>{state.error}</span>
           </div>
         )}
 
@@ -55,9 +49,13 @@ export default function FormUpdateCategory({ data }: FormUpdateCategoryProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category Name</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Update category name..." {...field} />
+                <Input
+                  placeholder="Input Category Name"
+                  {...field}
+                  name="name"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,9 +64,8 @@ export default function FormUpdateCategory({ data }: FormUpdateCategoryProps) {
 
         <div className="flex gap-4">
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Updating..." : "Save Changes"}
+            {isPending ? "Saving..." : "Save Category"}
           </Button>
-
           <Button
             variant="outline"
             type="button"

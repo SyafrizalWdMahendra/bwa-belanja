@@ -1,17 +1,19 @@
 "use server";
 
 import { ActionResult } from "@/types";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { categorySchema } from "./definition";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { error } from "console";
 
 export async function postCategory(
   _: unknown,
   formData: FormData
 ): Promise<ActionResult> {
   const name = formData.get("name") as string;
-  const validation = categorySchema.safeParse({ name });
+  const createSchema = categorySchema.omit({ id: true });
+  const validation = createSchema.safeParse({ name });
 
   if (!validation.success) {
     return {
@@ -76,4 +78,18 @@ export async function updateCategory(
 
   revalidatePath("/dashboard/categories");
   return redirect("/dashboard/categories?updated=true");
+}
+
+export async function deleteCategory(id: number): Promise<ActionResult> {
+  try {
+    await prisma.category.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.log(error);
+    return redirect("/dashboard/categories");
+  }
+
+  revalidatePath("/dashboard/categories");
+  return redirect("/dashboard/categories?deleted=true");
 }

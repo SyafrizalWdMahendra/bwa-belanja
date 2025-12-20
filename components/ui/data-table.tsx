@@ -102,6 +102,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/definition";
 import { DataTableProps } from "@/lib/utils";
+import FormDelete from "@/app/(admin)/dashboard/(index)/categories/_components/form-delete";
+import { Pencil } from "lucide-react";
 
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
@@ -192,10 +194,13 @@ export const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-32">
             <Link href={`/dashboard/categories/edit/${category.id}`}>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Pencil className="w-4 h-4 mr-2" />
+                <span>Edit</span>
+              </DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+            <FormDelete id={category.id} />
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -261,6 +266,7 @@ export function DataTable({
 
   const isCreated = searchParams.get("created");
   const isUpdated = searchParams.get("updated");
+  const isDeleted = searchParams.get("deleted");
 
   const toastShownRef = React.useRef(false);
 
@@ -279,8 +285,15 @@ export function DataTable({
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete("updated");
       window.history.replaceState({}, "", newUrl.toString());
+    } else if (isDeleted && !toastShownRef.current) {
+      toast.success("Category deleted successfully!");
+      toastShownRef.current = true;
+
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("deleted");
+      window.history.replaceState({}, "", newUrl.toString());
     }
-  }, [isCreated, isUpdated]);
+  }, [isCreated, isUpdated, isDeleted]);
 
   const table = useReactTable({
     data,
