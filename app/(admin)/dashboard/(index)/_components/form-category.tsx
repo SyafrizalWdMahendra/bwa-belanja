@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -11,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ActionResult } from "@/types";
 import { postCategory } from "../categories/lib/actions";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
@@ -67,9 +65,18 @@ export default function FormCategory() {
           )}
         />
 
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save Category"}
-        </Button>
+        <div className="flex gap-4">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Saving..." : "Save Category"}
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => window.history.back()}
+          >
+            Cancel
+          </Button>
+        </div>
       </form>
     </Form>
   );

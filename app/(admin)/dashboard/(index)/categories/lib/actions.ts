@@ -33,7 +33,6 @@ export async function postCategory(
   }
 
   revalidatePath("/dashboard/categories");
-
   return redirect("/dashboard/categories?created=true");
 }
 
@@ -53,11 +52,11 @@ export async function updateCategory(
 
   const updateSchema = categorySchema.omit({ id: true });
 
-  const validated = updateSchema.safeParse(rawData);
+  const validation = updateSchema.safeParse(rawData);
 
-  if (!validated.success) {
+  if (!validation.success) {
     return {
-      error: validated.error.issues[0].message,
+      error: validation.error.issues[0].message,
     };
   }
 
@@ -65,7 +64,7 @@ export async function updateCategory(
     await prisma.category.update({
       where: { id },
       data: {
-        name: validated.data.name,
+        name: validation.data.name,
       },
     });
   } catch (error) {
