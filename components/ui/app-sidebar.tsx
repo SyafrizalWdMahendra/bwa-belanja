@@ -7,15 +7,9 @@ import {
   Box,
   Building,
   Command,
-  Frame,
-  GalleryVerticalEnd,
   HomeIcon,
-  Map,
   MapPin,
-  PieChart,
-  Settings2,
   ShoppingBag,
-  User,
   Users,
 } from "lucide-react";
 

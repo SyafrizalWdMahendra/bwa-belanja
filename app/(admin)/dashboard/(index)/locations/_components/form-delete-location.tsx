@@ -1,9 +1,8 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { deleteCategory } from "../lib/actions";
 import { initialState } from "@/lib/utils";
 import { useActionState } from "react";
-import { AlertCircle, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,9 +14,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { deleteLocation } from "../lib/actions";
 
-export default function FormDelete({ id }: { id: number }) {
-  const deleteActionWithId = deleteCategory.bind(null, id);
+export default function FormDeleteLocation({ id }: { id: number }) {
+  const deleteActionWithId = deleteLocation.bind(null, id);
 
   const [state, formAction, isPending] = useActionState(
     async (_state: any, formData: FormData) => {
