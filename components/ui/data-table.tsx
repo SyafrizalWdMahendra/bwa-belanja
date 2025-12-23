@@ -100,7 +100,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/definition";
-import { DataTableProps } from "@/lib/utils";
+import {
+  DataBrandTableProps,
+  DataCategoryTableProps,
+  DataLocationTableProps,
+} from "@/lib/utils";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
 
 export function DragHandle({ id }: { id: number }) {
@@ -150,7 +154,7 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof categorySchema>> }) {
 export function CategoryDataTable({
   columns,
   data: initialData,
-}: DataTableProps<z.infer<typeof categorySchema>, unknown>) {
+}: DataCategoryTableProps<z.infer<typeof categorySchema>, unknown>) {
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -476,7 +480,7 @@ export function CategoryDataTable({
 export function LocationDataTable({
   columns,
   data: initialData,
-}: DataTableProps<z.infer<typeof categorySchema>, unknown>) {
+}: DataLocationTableProps<z.infer<typeof categorySchema>, unknown>) {
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -802,7 +806,7 @@ export function LocationDataTable({
 export function BrandDataTable({
   columns,
   data: initialData,
-}: DataTableProps<z.infer<typeof brandSchema>, unknown>) {
+}: DataBrandTableProps<z.infer<typeof brandSchema>, unknown>) {
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =

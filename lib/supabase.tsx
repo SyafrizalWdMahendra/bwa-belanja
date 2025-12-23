@@ -1,13 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY ?? "";
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_KEY!
+);
 
-const supabase = createClient(supabaseUrl, supabaseKey);
 export const getImageUrl = (name: string) => {
-  const { data } = supabase.storage
-    .from("public-bucket")
-    .getPublicUrl(`public/brands/${name}`);
+  const { data } = supabase.storage.from("belanja").getPublicUrl(name);
 
   return data.publicUrl;
 };
