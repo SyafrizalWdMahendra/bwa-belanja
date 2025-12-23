@@ -1,3 +1,5 @@
+"use client";
+
 import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/definition";
 import { ColumnDef } from "@tanstack/react-table";
 import z from "zod";
@@ -18,8 +20,11 @@ import { DragHandle, TableCellViewer } from "./data-table";
 import { Badge } from "./badge";
 import { locationSchema } from "@/app/(admin)/dashboard/(index)/locations/lib/definition";
 import FormDeleteLocation from "@/app/(admin)/dashboard/(index)/locations/_components/form-delete-location";
+import { getImageUrl } from "@/lib/supabase";
+import Image from "next/image";
+import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
 
-export const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
+const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   {
     id: "drag",
     header: () => null,
@@ -103,7 +108,7 @@ export const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   },
 ];
 
-export const locationColumns: ColumnDef<z.infer<typeof locationSchema>>[] = [
+const locationColumns: ColumnDef<z.infer<typeof locationSchema>>[] = [
   {
     id: "drag",
     header: () => null,
@@ -186,3 +191,103 @@ export const locationColumns: ColumnDef<z.infer<typeof locationSchema>>[] = [
     },
   },
 ];
+
+const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => {
+      const brand = row.original;
+
+      return (
+        <div className="inline-flex items-center gap-5">
+          <Image
+            src={getImageUrl(brand.logo ?? "")}
+            alt="Product"
+            width={80}
+            height={80}
+          />
+          <span>{brand.name}</span>
+        </div>
+      );
+    },
+  },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "brand",
+    header: "Brands",
+    cell: ({ row }) => {
+      return <TableCellViewer item={row.original} />;
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "name",
+    header: "Section name",
+    cell: ({ row }) => (
+      <div className="w-32">
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {row.original.name}
+        </Badge>
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const brand = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <Link href={`/dashboard/brands/edit/${brand.id}`}>
+              <DropdownMenuItem>
+                <Pencil className="w-4 h-4 mr-2" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuSeparator />
+            <FormDeleteLocation id={brand.id} />
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
+
+export { categoryColumns, locationColumns, brandsColumns };
