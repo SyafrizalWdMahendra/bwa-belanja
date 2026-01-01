@@ -1,11 +1,10 @@
 "use server";
 
 import { ActionResult } from "@/types";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { categorySchema } from "./definition";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { error } from "console";
 
 export async function postCategory(
   _: unknown,

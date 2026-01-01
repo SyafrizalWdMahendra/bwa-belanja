@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertCircle } from "lucide-react";
 import React, { useActionState } from "react";
-import { postCategory } from "../../categories/lib/actions";
 import { initialState } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { BrandFormValues, brandSchema } from "../lib/definition";

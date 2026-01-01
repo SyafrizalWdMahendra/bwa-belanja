@@ -1,10 +1,9 @@
 "use server";
 
 import { ActionResult } from "@/types";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { error } from "console";
 import { brandSchema } from "./definition";
 import { supabase } from "@/lib/supabase";
 

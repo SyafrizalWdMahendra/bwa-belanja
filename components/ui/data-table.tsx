@@ -26,7 +26,6 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconDotsVertical,
   IconGripVertical,
   IconLayoutColumns,
   IconPlus,
