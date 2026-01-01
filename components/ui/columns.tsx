@@ -202,10 +202,11 @@ const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
       return (
         <div className="inline-flex items-center gap-5">
           <Image
-            src={getImageUrl(brand.logo ?? "")}
-            alt="Product"
+            src={brand.logo}
+            alt={brand.name}
             width={80}
             height={80}
+            className="object-contain"
           />
           <span>{brand.name}</span>
         </div>
