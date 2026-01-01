@@ -20,9 +20,9 @@ import { DragHandle, TableCellViewer } from "./data-table";
 import { Badge } from "./badge";
 import { locationSchema } from "@/app/(admin)/dashboard/(index)/locations/lib/definition";
 import FormDeleteLocation from "@/app/(admin)/dashboard/(index)/locations/_components/form-delete-location";
-import { getImageUrl } from "@/lib/supabase";
 import Image from "next/image";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
+import { getImageUrl } from "@/app/(admin)/dashboard/(index)/brands/lib/storage";
 
 const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   {
