@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 import { lucia } from "@/lib/auth";
 import { ActionResult } from "@/types";
@@ -46,7 +46,6 @@ export async function SignIn(
       sessionCookie.value,
       sessionCookie.attributes
     );
-
   } catch (err) {
     console.error("Login error:", err);
     return { error: "Terjadi kesalahan internal server" };

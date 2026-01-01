@@ -1,11 +1,11 @@
 "use server";
 
-import { ActionResult } from "@/types";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import type { ActionResult } from "@/types";
 import { brandSchema } from "./definition";
-import { supabase } from "@/lib/supabase";
+import { deleteFile, replaceFile, uploadFile } from "./storage";
 
 export async function postBrand(
   _: unknown,
@@ -24,37 +24,30 @@ export async function postBrand(
     };
   }
 
-  let logoPath = "";
+  let logoUrl = "";
 
   if (logoFile && logoFile.size > 0) {
-    const fileName = `brands/${Date.now()}-${logoFile.name.replaceAll(
-      " ",
-      "_"
-    )}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("belanja")
-      .upload(fileName, logoFile, {
-        cacheControl: "3600",
-        upsert: false,
-      });
-
-    if (uploadError) {
+    try {
+      const { url } = await uploadFile(logoFile, "brands");
+      logoUrl = url;
+    } catch (uploadError) {
       console.error("Upload Error:", uploadError);
       return { error: "Gagal mengupload gambar logo." };
     }
-
-    logoPath = fileName;
   }
 
   try {
     await prisma.brand.create({
       data: {
         name: validation.data.name,
-        logo: logoPath,
+        logo: logoUrl,
       },
     });
   } catch (error) {
+    if (logoUrl) {
+      await deleteFile(logoUrl);
+    }
+
     console.error("Error creating brand:", error);
     return {
       error: "Terjadi kesalahan saat menyimpan data merek.",
@@ -65,23 +58,15 @@ export async function postBrand(
   return redirect("/dashboard/brands?created=true");
 }
 
-export async function getBrandById(id: number) {
-  const brand = await prisma.brand.findUnique({
-    where: { id },
-  });
-  return brand;
-}
-
 export async function updateBrand(
-  id: number,
-  prevState: any,
+  id: string,
+  _: unknown,
   formData: FormData
 ): Promise<ActionResult> {
-  const rawData = Object.fromEntries(formData.entries());
+  const name = formData.get("name") as string;
+  const logoFile = formData.get("logo") as File;
 
-  const updateSchema = brandSchema.omit({ id: true });
-
-  const validation = updateSchema.safeParse(rawData);
+  const validation = brandSchema.safeParse({ id, name, logo: logoFile });
 
   if (!validation.success) {
     return {
@@ -90,17 +75,43 @@ export async function updateBrand(
   }
 
   try {
+    const existingBrand = await prisma.brand.findUnique({
+      where: { id: Number(id) },
+      select: { logo: true },
+    });
+
+    if (!existingBrand) {
+      return { error: "Brand tidak ditemukan." };
+    }
+
+    let logoUrl = existingBrand.logo;
+
+    if (logoFile && logoFile.size > 0) {
+      try {
+        const { url } = await replaceFile(
+          existingBrand.logo,
+          logoFile,
+          "brands"
+        );
+        logoUrl = url;
+      } catch (uploadError) {
+        console.error("Upload Error:", uploadError);
+        return { error: "Gagal mengupload gambar logo." };
+      }
+    }
+
+    // Update brand in database
     await prisma.brand.update({
-      where: { id },
+      where: { id: Number(id) },
       data: {
         name: validation.data.name,
-        logo: validation.data.logo,
+        logo: logoUrl,
       },
     });
   } catch (error) {
-    console.error("Update error:", error);
+    console.error("Error updating brand:", error);
     return {
-      error: "Failed to update brand.",
+      error: "Terjadi kesalahan saat mengupdate data merek.",
     };
   }
 
@@ -108,16 +119,38 @@ export async function updateBrand(
   return redirect("/dashboard/brands?updated=true");
 }
 
-export async function deleteBrands(id: number): Promise<ActionResult> {
+export async function deleteBrand(id: string): Promise<ActionResult> {
   try {
-    await prisma.brand.delete({
-      where: { id },
+    const brand = await prisma.brand.findUnique({
+      where: { id: Number(id) },
+      select: { logo: true },
     });
-  } catch (error) {
-    console.log(error);
-    return redirect("/dashboard/brands");
-  }
 
-  revalidatePath("/dashboard/brands");
-  return redirect("/dashboard/brands?deleted=true");
+    if (!brand) {
+      return { error: "Brand tidak ditemukan." };
+    }
+
+    await prisma.brand.delete({
+      where: { id: Number(id) },
+    });
+
+    if (brand.logo) {
+      await deleteFile(brand.logo);
+    }
+
+    revalidatePath("/dashboard/brands");
+    return { success: "Brand berhasil dihapus." };
+  } catch (error) {
+    console.error("Error deleting brand:", error);
+    return {
+      error: "Terjadi kesalahan saat menghapus data merek.",
+    };
+  }
+}
+
+export async function getBrandById(id: number) {
+  const brand = await prisma.brand.findUnique({
+    where: { id },
+  });
+  return brand;
 }

@@ -1,3 +1,5 @@
 export type ActionResult = {
-  error: string;
+  error?: string;
+  success?: string;
+  data?: any;
 };

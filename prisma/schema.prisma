@@ -1,12 +1,11 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
-
 
 enum RoleUser {
   superadmin
@@ -35,11 +34,11 @@ model User {
   username  String
   email     String   @unique
   password  String
-  role      RoleUser @default(customer) 
+  role      RoleUser @default(customer)
   createdAt DateTime @default(now()) @map("created_at")
 
-  orders Order[]
-  sessions  Session[]
+  orders   Order[]
+  sessions Session[]
 
   @@map("users")
 }
@@ -78,7 +77,7 @@ model Product {
   categoryId  Int          @map("category_id")
   locationId  Int          @map("location_id")
   name        String
-  description String       @db.Text 
+  description String       @db.Text
   price       Int
   stock       StockProduct
   image       String
@@ -99,20 +98,20 @@ model Order {
   status StatusOrder @default(pending)
 
   user        User           @relation(fields: [userId], references: [id])
-  orderDetail OrderDetail? 
+  orderDetail OrderDetail?
   orderItems  OrderProduct[]
 
   @@map("orders")
 }
 
 model OrderDetail {
-  id         Int    @id @default(autoincrement())
-  orderId    Int    @unique @map("order_id")
+  id         Int     @id @default(autoincrement())
+  orderId    Int     @unique @map("order_id")
   name       String
   phone      String
   address    String
   city       String
-  postalCode String @map("postal_code")
+  postalCode String  @map("postal_code")
   notes      String?
 
   order Order @relation(fields: [orderId], references: [id])
@@ -138,5 +137,5 @@ model Session {
   userId    Int      @map("user_id")
   expiresAt DateTime
 
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }

@@ -1,31 +1,42 @@
-import "dotenv/config";
-import { RoleUser } from "../generated/prisma/client";
-import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { RoleUser } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 async function main() {
-  const passwordPlain = "superadmin123";
-  const hashedPassword = await bcrypt.hash(passwordPlain, 10);
+  const hashedPassword = await bcrypt.hash("password123", 10);
 
-  const user = await prisma.user.upsert({
+  const superAdmin = await prisma.user.upsert({
     where: { email: "superadmin@example.com" },
     update: {},
     create: {
-      username: "super admin",
       email: "superadmin@example.com",
+      username: "Super Admin",
       password: hashedPassword,
       role: RoleUser.superadmin,
     },
   });
 
-  console.log("✅ Seed success:", {
-    email: user.email,
-    password: passwordPlain,
+  const customer = await prisma.user.upsert({
+    where: { email: "user@example.com" },
+    update: {},
+    create: {
+      email: "user@example.com",
+      username: "Regular User",
+      password: hashedPassword,
+      role: RoleUser.customer,
+    },
   });
+
+  console.log("Seeding completed!");
+  console.log({ superAdmin, customer });
 }
 
 main()
-  .catch(console.error)
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });

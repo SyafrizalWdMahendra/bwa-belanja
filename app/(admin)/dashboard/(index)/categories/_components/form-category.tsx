@@ -12,11 +12,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
 import { initialState } from "@/lib/utils";
 import { CategoryFormValues, categorySchema } from "../lib/definition";
 import { postCategory } from "../lib/actions";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function FormCategory() {
   const [state, formAction, isPending] = useActionState(

@@ -31,7 +31,7 @@ export default function FormDeleteLocation({ id }: { id: number }) {
       <AlertDialogTrigger asChild>
         <DropdownMenuItem
           className="text-red-600 focus:text-red-600"
-          onSelect={(e) => e.preventDefault()}
+          onSelect={(e: any) => e.preventDefault()}
         >
           <Trash className="w-4 h-4 mr-2 text-red-600" />
           <span>Delete</span>
