@@ -195,71 +195,32 @@ const locationColumns: ColumnDef<z.infer<typeof locationSchema>>[] = [
 const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
   {
     id: "drag",
-    header: () => null,
+    header: "Brands Logo",
     cell: ({ row }) => {
       const brand = row.original;
 
       return (
-        <div className="inline-flex items-center gap-5">
-          <Image
-            src={brand.logo}
-            alt={brand.name}
-            width={80}
-            height={80}
-            className="object-contain"
-          />
-          <span>{brand.name}</span>
-        </div>
+        <Image
+          src={brand.logo}
+          alt={brand.name}
+          width={100}
+          height={100}
+          className="object-contain"
+        />
       );
     },
   },
   {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "brand",
-    header: "Brands",
+    header: "Brands Name",
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />;
     },
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: "Section name",
-    cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.name}
-        </Badge>
-      </div>
-    ),
-  },
-  {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const brand = row.original;
 

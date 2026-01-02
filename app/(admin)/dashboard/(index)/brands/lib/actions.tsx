@@ -59,7 +59,7 @@ export async function postBrand(
 }
 
 export async function updateBrand(
-  id: string,
+  id: number,
   _: unknown,
   formData: FormData
 ): Promise<ActionResult> {
@@ -100,7 +100,6 @@ export async function updateBrand(
       }
     }
 
-    // Update brand in database
     await prisma.brand.update({
       where: { id: Number(id) },
       data: {
