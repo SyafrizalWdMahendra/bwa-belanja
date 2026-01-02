@@ -1,7 +1,7 @@
 "use client";
 
 import { type LucideIcon } from "lucide-react";
-import Link from "next/link"; // Pastikan import Link ada
+import Link from "next/link";
 
 import {
   SidebarGroup,

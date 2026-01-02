@@ -1,5 +1,6 @@
 import React from "react";
+import { DataTableSkeleton } from "../_components/data-table-skeleton";
 
 export default function Loading() {
-  return <div>Loading</div>;
+  return <DataTableSkeleton />;
 }

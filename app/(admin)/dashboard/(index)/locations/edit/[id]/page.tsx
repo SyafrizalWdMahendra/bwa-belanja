@@ -1,17 +1,9 @@
-import { notFound } from "next/navigation";
-import { PageProps } from "../../lib/utils";
-import { getLocationById } from "../../lib/actions";
-import FormUpdateLocation from "../../_components/form-update-location";
+import { Suspense } from "react";
+import { FormUpdateSkeleton } from "../../../_components/form-update-skeleton";
+import LocationFormWrapper from "../location-form-wrapper";
+import { PageProps } from "@/lib/utils";
 
-export default async function LocationEdit({ params }: PageProps) {
-  const { id } = await params;
-
-  const data = await getLocationById(Number(id));
-
-  if (!data) {
-    return notFound();
-  }
-
+export default function LocationEdit({ params }: PageProps) {
   return (
     <div className="max-w-2xl mx-auto py-10">
       <div className="mb-6">
@@ -20,7 +12,9 @@ export default async function LocationEdit({ params }: PageProps) {
           Make changes to your location here.
         </p>
       </div>
-      <FormUpdateLocation data={data} />
+      <Suspense fallback={<FormUpdateSkeleton />}>
+        <LocationFormWrapper params={params} />
+      </Suspense>
     </div>
   );
 }

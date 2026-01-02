@@ -16,8 +16,20 @@ import React from "react";
 
 export default function Header() {
   const pathname = usePathname();
-
   const segments = pathname.split("/").filter(Boolean);
+
+  const breadcrumbItems = segments.reduce((acc, segment, index) => {
+    if (segment === "dashboard") return acc;
+
+    if (segments[index - 1] === "edit") return acc;
+
+    const href = `/${segments.slice(0, index + 1).join("/")}`;
+
+    const title = segment.charAt(0).toUpperCase() + segment.slice(1);
+
+    acc.push({ title, href });
+    return acc;
+  }, [] as { title: string; href: string }[]);
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -44,30 +56,24 @@ export default function Header() {
               </>
             )}
 
-            {segments.length > 1 &&
-              segments.slice(1).map((segment, index) => {
-                const href = `/${segments.slice(0, index + 2).join("/")}`;
+            {breadcrumbItems.map((item, index) => {
+              const isLast = index === breadcrumbItems.length - 1;
 
-                const isLast = index === segments.slice(1).length - 1;
-
-                const title =
-                  segment.charAt(0).toUpperCase() + segment.slice(1);
-
-                return (
-                  <React.Fragment key={href}>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem className={isLast ? "" : "hidden md:block"}>
-                      {isLast ? (
-                        <BreadcrumbPage>{title}</BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink asChild>
-                          <Link href={href}>{title}</Link>
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-                  </React.Fragment>
-                );
-              })}
+              return (
+                <React.Fragment key={item.href}>
+                  <BreadcrumbSeparator className="hidden md:block" />
+                  <BreadcrumbItem className={isLast ? "" : "hidden md:block"}>
+                    {isLast ? (
+                      <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink asChild>
+                        <Link href={item.href}>{item.title}</Link>
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                </React.Fragment>
+              );
+            })}
           </BreadcrumbList>
         </Breadcrumb>
       </div>

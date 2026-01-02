@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { initialState } from "@/lib/utils";
-import { FormUpdateLocationProps } from "../lib/utils";
+import { FormUpdateLocationProps } from "@/lib/utils";
 import { updateLocation } from "../lib/actions";
 import { LocationFormValues, locationSchema } from "../lib/definition";
 

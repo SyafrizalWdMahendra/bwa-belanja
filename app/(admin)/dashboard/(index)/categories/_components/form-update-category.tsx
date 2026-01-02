@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateCategory } from "../lib/actions";
 import { CategoryFormValues, categorySchema } from "../lib/definition";
-import { FormUpdateCategoryProps } from "../lib/utils";
+import { FormUpdateCategoryProps } from "@/lib/utils";
 import { initialState } from "@/lib/utils";
 
 export default function FormUpdateCategory({ data }: FormUpdateCategoryProps) {

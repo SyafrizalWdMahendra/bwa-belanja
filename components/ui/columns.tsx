@@ -22,7 +22,7 @@ import { locationSchema } from "@/app/(admin)/dashboard/(index)/locations/lib/de
 import FormDeleteLocation from "@/app/(admin)/dashboard/(index)/locations/_components/form-delete-location";
 import Image from "next/image";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
-import { getImageUrl } from "@/app/(admin)/dashboard/(index)/brands/lib/storage";
+import FormDeleteBrand from "@/app/(admin)/dashboard/(index)/brands/_components/form-brand-delete";
 
 const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   {
@@ -77,6 +77,7 @@ const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   },
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const category = row.original;
 
@@ -161,6 +162,7 @@ const locationColumns: ColumnDef<z.infer<typeof locationSchema>>[] = [
   },
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const location = row.original;
 
@@ -205,7 +207,7 @@ const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
           alt={brand.name}
           width={100}
           height={100}
-          className="object-contain"
+          className="object-contain w-25 h-auto"
         />
       );
     },
@@ -244,7 +246,7 @@ const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
               </DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
-            <FormDeleteLocation id={brand.id} />
+            <FormDeleteBrand id={brand.id} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

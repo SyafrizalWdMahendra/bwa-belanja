@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { BrandFormValues, brandSchema } from "../lib/definition";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateBrand } from "../lib/actions";
-import { FormUpdateBrandProps } from "../lib/types";
+import { FormUpdateBrandProps } from "@/lib/utils";
 
 export default function FormUpdateBrand({ data }: FormUpdateBrandProps) {
   const updateActionWithId = async (state: any, formData: FormData) => {

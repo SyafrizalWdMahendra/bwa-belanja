@@ -118,7 +118,7 @@ export async function updateBrand(
   return redirect("/dashboard/brands?updated=true");
 }
 
-export async function deleteBrand(id: string): Promise<ActionResult> {
+export async function deleteBrand(id: number): Promise<ActionResult> {
   try {
     const brand = await prisma.brand.findUnique({
       where: { id: Number(id) },
@@ -136,15 +136,14 @@ export async function deleteBrand(id: string): Promise<ActionResult> {
     if (brand.logo) {
       await deleteFile(brand.logo);
     }
-
-    revalidatePath("/dashboard/brands");
-    return { success: "Brand berhasil dihapus." };
   } catch (error) {
     console.error("Error deleting brand:", error);
     return {
       error: "Terjadi kesalahan saat menghapus data merek.",
     };
   }
+  revalidatePath("/dashboard/brands");
+  return redirect("/dashboard/brands?deleted=true");
 }
 
 export async function getBrandById(id: number) {

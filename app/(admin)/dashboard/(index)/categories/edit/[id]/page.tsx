@@ -1,17 +1,9 @@
-import { notFound } from "next/navigation";
-import FormUpdateCategory from "../../_components/form-update-category";
-import { getCategoryById } from "../../lib/actions";
-import { PageProps } from "../../lib/utils";
+import { PageProps } from "@/lib/utils";
+import { FormUpdateSkeleton } from "../../../_components/form-update-skeleton";
+import { Suspense } from "react";
+import CategoriesFormWrapper from "../categories-form-wrapper";
 
-export default async function CategoryEdit({ params }: PageProps) {
-  const { id } = await params;
-
-  const data = await getCategoryById(Number(id));
-
-  if (!data) {
-    return notFound();
-  }
-
+export default function CategoryEdit({ params }: PageProps) {
   return (
     <div className="max-w-2xl mx-auto py-10">
       <div className="mb-6">
@@ -20,7 +12,9 @@ export default async function CategoryEdit({ params }: PageProps) {
           Make changes to your category here.
         </p>
       </div>
-      <FormUpdateCategory data={data} />
+      <Suspense fallback={<FormUpdateSkeleton />}>
+        <CategoriesFormWrapper params={params} />
+      </Suspense>
     </div>
   );
 }

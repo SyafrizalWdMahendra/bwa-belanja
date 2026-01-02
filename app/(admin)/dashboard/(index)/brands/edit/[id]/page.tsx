@@ -1,18 +1,9 @@
-import React from "react";
-import { getBrandById } from "../../lib/actions";
-import { notFound } from "next/navigation";
-import FormUpdateBrand from "../../_components/form-update-brand";
-import { PageProps } from "../../lib/types";
+import React, { Suspense } from "react";
+import { PageProps } from "@/lib/utils";
+import { FormUpdateBrandSkeleton } from "../../../_components/form-update-brand-skeleton";
+import BrandFormWrapper from "../brand-form-wrapper";
 
-export default async function EditPage({ params }: PageProps) {
-  const { id } = await params;
-
-  const data = await getBrandById(Number(id));
-
-  if (!data) {
-    return notFound();
-  }
-
+export default function EditPage({ params }: PageProps) {
   return (
     <div className="max-w-2xl mx-auto py-10">
       <div className="mb-6">
@@ -21,7 +12,9 @@ export default async function EditPage({ params }: PageProps) {
           Make changes to your brand here.
         </p>
       </div>
-      <FormUpdateBrand data={data} />
+      <Suspense fallback={<FormUpdateBrandSkeleton />}>
+        <BrandFormWrapper params={params} />
+      </Suspense>
     </div>
   );
 }

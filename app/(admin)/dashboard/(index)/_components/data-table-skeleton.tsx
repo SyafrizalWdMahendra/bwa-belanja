@@ -13,7 +13,7 @@ export function DataTableSkeleton() {
     <div className="flex w-full flex-col gap-6">
       <div className="flex items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-[150px] lg:hidden" />
+          <Skeleton className="h-9 w-37.5 lg:hidden" />
 
           <div className="hidden items-center gap-2 lg:flex">
             <Skeleton className="h-8 w-20 " />
@@ -21,8 +21,8 @@ export function DataTableSkeleton() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-[200px] hidden lg:block" />{" "}
-          <Skeleton className="h-9 w-[140px]" />
+          <Skeleton className="h-9 w-50 hidden lg:block" />{" "}
+          <Skeleton className="h-9 w-35" />
         </div>
       </div>
 
@@ -31,8 +31,8 @@ export function DataTableSkeleton() {
           <TableHeader className="bg-muted/50">
             <TableRow>
               {Array.from({ length: 5 }).map((_, i) => (
-                <TableHead key={i} className={i === 0 ? "w-[50px]" : ""}>
-                  <Skeleton className="h-4 w-full max-w-[100px]" />
+                <TableHead key={i} className={i === 0 ? "w-12.5" : ""}>
+                  <Skeleton className="h-4 w-full max-w-25" />
                 </TableHead>
               ))}
             </TableRow>
@@ -47,8 +47,8 @@ export function DataTableSkeleton() {
                         cellIndex === 0
                           ? "w-4"
                           : cellIndex === 1
-                          ? "max-w-[200px]"
-                          : "max-w-[100px]"
+                          ? "max-w-50"
+                          : "max-w-25"
                       }`}
                     />
                   </TableCell>
@@ -60,7 +60,7 @@ export function DataTableSkeleton() {
       </div>
 
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <Skeleton className="hidden h-4 w-[200px] lg:block" />
+        <Skeleton className="hidden h-4 w-50 lg:block" />
 
         <div className="flex w-full items-center justify-between gap-4 lg:w-auto lg:justify-end">
           <div className="hidden items-center gap-2 lg:flex">
