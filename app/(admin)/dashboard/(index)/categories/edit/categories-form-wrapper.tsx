@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCategoryById } from "../lib/actions";
 import FormUpdateCategory from "../_components/form-update-category";
-import { PageProps } from "@/lib/utils";
+import { PageProps } from "@/lib/types";
 
 export default async function CategoriesFormWrapper({ params }: PageProps) {
   const { id } = await params;
