@@ -84,7 +84,7 @@
 
 //         <div className="flex gap-4">
 //           <Button type="submit" disabled={isPending}>
-//             {isPending ? "Saving..." : "Save Brand"}
+//             {isPending ? "Saving..." : "Save Changes"}
 //           </Button>
 //           <Button
 //             variant="outline"
