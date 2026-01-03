@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { PageProps } from "@/lib/utils";
+import { PageProps } from "@/lib/types";
 import { FormUpdateBrandSkeleton } from "../../../_components/form-update-brand-skeleton";
 import BrandFormWrapper from "../brand-form-wrapper";
 

@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getLocationById } from "../lib/actions";
-import FormUpdateCategory from "../../categories/_components/form-update-category";
-import { PageProps } from "@/lib/utils";
+import { PageProps } from "@/lib/types";
 import FormUpdateLocation from "../_components/form-update-location";
 
 export default async function LocationFormWrapper({ params }: PageProps) {

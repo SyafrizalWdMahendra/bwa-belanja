@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { FormUpdateSkeleton } from "../../../_components/form-update-skeleton";
 import LocationFormWrapper from "../location-form-wrapper";
-import { PageProps } from "@/lib/utils";
+import { PageProps } from "@/lib/types";
 
 export default function LocationEdit({ params }: PageProps) {
   return (

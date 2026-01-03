@@ -65,65 +65,75 @@ export async function postProduct(
   return redirect("/dashboard/products?created=true");
 }
 
-// export async function updateBrand(
-//   id: number,
-//   _: unknown,
-//   formData: FormData
-// ): Promise<ActionResult> {
-//   const name = formData.get("name") as string;
-//   const logoFile = formData.get("logo") as File;
+export async function updateProduct(
+  id: number,
+  _: unknown,
+  formData: FormData
+): Promise<ActionResult> {
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const price = formData.get("price");
+  const stock = formData.get("stock") as string;
+  const logoFile = formData.get("logo") as File;
 
-//   const validation = productSchema.safeParse({ id, name, logo: logoFile });
+  const validation = productSchema.safeParse({ id, name, image: logoFile });
 
-//   if (!validation.success) {
-//     return {
-//       error: validation.error.issues[0].message,
-//     };
-//   }
+  if (!validation.success) {
+    return {
+      error: validation.error.issues[0].message,
+    };
+  }
 
-//   try {
-//     const existingBrand = await prisma.brand.findUnique({
-//       where: { id: Number(id) },
-//       select: { logo: true },
-//     });
+  try {
+    const existingProduct = await prisma.product.findUnique({
+      where: { id: Number(id) },
+      select: { image: true },
+    });
 
-//     if (!existingBrand) {
-//       return { error: "Brand tidak ditemukan." };
-//     }
+    if (!existingProduct) {
+      return { error: "Produk tidak ditemukan." };
+    }
 
-//     let logoUrl = existingBrand.logo;
+    let logoUrl = existingProduct.image;
 
-//     if (logoFile && logoFile.size > 0) {
-//       try {
-//         const { url } = await replaceFile(
-//           existingBrand.logo,
-//           logoFile,
-//           "brands"
-//         );
-//         logoUrl = url;
-//       } catch (uploadError) {
-//         console.error("Upload Error:", uploadError);
-//         return { error: "Gagal mengupload gambar logo." };
-//       }
-//     }
+    if (logoFile && logoFile.size > 0) {
+      try {
+        const { url } = await replaceFile(
+          existingProduct.image,
+          logoFile,
+          "products"
+        );
+        logoUrl = url;
+      } catch (uploadError) {
+        console.error("Upload Error:", uploadError);
+        return { error: "Gagal mengupload gambar logo." };
+      }
+    }
 
-//     await prisma.brand.update({
-//       where: { id: Number(id) },
-//       data: {
-//         name: validation.data.name,
-//         logo: logoUrl,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Error updating brand:", error);
-//     return {
-//       error: "Terjadi kesalahan saat mengupdate data merek.",
-//     };
-//   }
+    await prisma.product.update({
+      where: { id: Number(id) },
+      data: {
+        name: validation.data.name,
+        image: logoUrl,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating brand:", error);
+    return {
+      error: "Terjadi kesalahan saat mengupdate data merek.",
+    };
+  }
 
-//   revalidatePath("/dashboard/brands");
-//   return redirect("/dashboard/brands?updated=true");
-// }
+  revalidatePath("/dashboard/products");
+  return redirect("/dashboard/products?updated=true");
+}
+
+export async function getProductById(id: number) {
+  const product = await prisma.product.findUnique({
+    where: { id },
+  });
+  return product;
+}
 
 // export async function deleteBrand(id: number): Promise<ActionResult> {
 //   try {

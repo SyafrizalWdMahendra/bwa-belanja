@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getBrandById } from "../lib/actions";
-import { PageProps } from "@/lib/utils";
+import { PageProps } from "@/lib/types";
 import FormUpdateBrand from "../_components/form-update-brand";
 
 export default async function BrandFormWrapper({ params }: PageProps) {

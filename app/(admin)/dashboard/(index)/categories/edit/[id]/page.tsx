@@ -1,4 +1,4 @@
-import { PageProps } from "@/lib/utils";
+import { PageProps } from "@/lib/types";
 import { FormUpdateSkeleton } from "../../../_components/form-update-skeleton";
 import { Suspense } from "react";
 import CategoriesFormWrapper from "../categories-form-wrapper";

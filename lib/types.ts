@@ -3,7 +3,7 @@ import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/d
 import { locationSchema } from "@/app/(admin)/dashboard/(index)/locations/lib/definition";
 import { productSchema } from "@/app/(admin)/dashboard/(index)/products/lib/definition";
 import { ActionResult } from "@/types";
-import { Brand, Category, Location } from "@prisma/client";
+import { Brand, Category, Location, Product } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import z from "zod";
 
@@ -41,6 +41,10 @@ export type FormUpdateCategoryProps = {
 
 export type FormUpdateBrandProps = {
   data: Brand;
+};
+
+export type FormUpdateProductProps = {
+  data: Product;
 };
 
 export const initialState: ActionResult = { error: "" };
