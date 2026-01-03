@@ -15,8 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateCategory } from "../lib/actions";
 import { CategoryFormValues, categorySchema } from "../lib/definition";
-import { FormUpdateCategoryProps } from "@/lib/utils";
-import { initialState } from "@/lib/utils";
+import { FormUpdateCategoryProps } from "@/lib/types";
+import { initialState } from "@/lib/types";
 
 export default function FormUpdateCategory({ data }: FormUpdateCategoryProps) {
   const updateActionWithId = async (state: any, formData: FormData) => {

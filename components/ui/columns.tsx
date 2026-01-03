@@ -23,6 +23,8 @@ import FormDeleteLocation from "@/app/(admin)/dashboard/(index)/locations/_compo
 import Image from "next/image";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
 import FormDeleteBrand from "@/app/(admin)/dashboard/(index)/brands/_components/form-brand-delete";
+import { dateFormat, rupiahFormat } from "@/lib/utils";
+import { productSchema } from "@/app/(admin)/dashboard/(index)/products/lib/definition";
 
 const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   {
@@ -197,6 +199,11 @@ const locationColumns: ColumnDef<z.infer<typeof locationSchema>>[] = [
 const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
   {
     id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    id: "logo",
     header: "Brands Logo",
     cell: ({ row }) => {
       const brand = row.original;
@@ -254,4 +261,92 @@ const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
   },
 ];
 
-export { categoryColumns, locationColumns, brandsColumns };
+const productsColumns: ColumnDef<z.infer<typeof productSchema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    id: "name",
+    header: "Name",
+    cell: ({ row }) => {
+      const brand = row.original;
+
+      return (
+        <Image
+          src={brand.image}
+          alt={brand.name}
+          width={100}
+          height={100}
+          className="object-contain w-25 h-auto"
+        />
+      );
+    },
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => {
+      const product = row.original;
+
+      return rupiahFormat(product.price);
+    },
+  },
+  {
+    accessorKey: "stock",
+    header: "Status",
+    cell: ({ row }) => {
+      const product = row.original;
+
+      return <Badge variant={"outline"}>{product.stock}</Badge>;
+    },
+  },
+  {
+    accessorKey: "total_sales",
+    header: "Total Sales",
+  },
+  {
+    accessorKey: "created_at",
+    header: "Created At",
+    cell: ({ row }) => {
+      const product = row.original;
+
+      return dateFormat(product.createdAt ?? null);
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const product = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <Link href={`/dashboard/products/edit/${product.id}`}>
+              <DropdownMenuItem>
+                <Pencil className="w-4 h-4 mr-2" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuSeparator />
+            {/* <FormDeleteBrand id={product.id} /> */}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
+
+export { categoryColumns, locationColumns, brandsColumns, productsColumns };

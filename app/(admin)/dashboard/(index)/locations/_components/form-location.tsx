@@ -14,7 +14,7 @@ import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
-import { initialState } from "@/lib/utils";
+import { initialState } from "@/lib/types";
 import { postLocation } from "../lib/actions";
 import { LocationFormValues, locationSchema } from "../lib/definition";
 

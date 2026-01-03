@@ -46,6 +46,7 @@ model Brand {
   id   Int     @id @default(autoincrement())
   logo String?
   name String
+  createdAt DateTime @default(now()) @map("created_at")
 
   products Product[]
 
@@ -55,6 +56,7 @@ model Brand {
 model Category {
   id   Int    @id @default(autoincrement())
   name String
+  createdAt DateTime @default(now()) @map("created_at")
 
   products Product[]
 
@@ -64,6 +66,7 @@ model Category {
 model Location {
   id   Int    @id @default(autoincrement())
   name String
+  createdAt DateTime @default(now()) @map("created_at")
 
   products Product[]
 
@@ -80,6 +83,7 @@ model Product {
   price       Int
   stock       StockProduct
   image       String
+  createdAt DateTime @default(now()) @map("created_at")
 
   brand      Brand          @relation(fields: [brandId], references: [id])
   category   Category       @relation(fields: [categoryId], references: [id])
@@ -95,6 +99,7 @@ model Order {
   userId Int         @map("user_id")
   total  Int
   status StatusOrder @default(pending)
+  createdAt DateTime @default(now()) @map("created_at")
 
   user        User           @relation(fields: [userId], references: [id])
   orderDetail OrderDetail?
@@ -112,6 +117,7 @@ model OrderDetail {
   city       String
   postalCode String  @map("postal_code")
   notes      String?
+  createdAt DateTime @default(now()) @map("created_at")
 
   order Order @relation(fields: [orderId], references: [id])
 
@@ -124,6 +130,7 @@ model OrderProduct {
   orderId   Int @map("order_id")
   subtotal  Int
   quantity  Int
+  createdAt DateTime @default(now()) @map("created_at")
 
   product Product @relation(fields: [productId], references: [id])
   order   Order   @relation(fields: [orderId], references: [id])
@@ -135,6 +142,7 @@ model Session {
   id        String   @id
   userId    Int      @map("user_id")
   expiresAt DateTime
+  createdAt DateTime @default(now()) @map("created_at")
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }

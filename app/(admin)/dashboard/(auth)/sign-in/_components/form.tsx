@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { SignIn } from "../lib/actions";
 import { Loader2, AlertCircle } from "lucide-react";
-import { initialState } from "@/lib/utils";
+import { initialState } from "@/lib/types";
 
 export default function FormSignIn() {
   const [state, formAction, isPending] = useActionState(SignIn, initialState);

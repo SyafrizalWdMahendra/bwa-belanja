@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
-import { initialState } from "@/lib/utils";
+import { initialState } from "@/lib/types";
 import { CategoryFormValues, categorySchema } from "../lib/definition";
 import { postCategory } from "../lib/actions";
 import { zodResolver } from "@hookform/resolvers/zod";

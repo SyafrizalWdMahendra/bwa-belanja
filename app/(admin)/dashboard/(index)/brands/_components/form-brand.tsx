@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertCircle } from "lucide-react";
 import React, { useActionState } from "react";
-import { initialState } from "@/lib/utils";
+import { initialState } from "@/lib/types";
 import { useForm } from "react-hook-form";
 import { BrandFormValues, brandSchema } from "../lib/definition";
 import { zodResolver } from "@hookform/resolvers/zod";

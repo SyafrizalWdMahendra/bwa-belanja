@@ -1,6 +1,6 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { initialState } from "@/lib/utils";
+import { initialState } from "@/lib/types";
 import { useActionState } from "react";
 import { Trash } from "lucide-react";
 import {

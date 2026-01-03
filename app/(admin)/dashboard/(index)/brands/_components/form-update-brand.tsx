@@ -11,12 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertCircle } from "lucide-react";
 import React, { useActionState } from "react";
-import { initialState } from "@/lib/utils";
+import { initialState } from "@/lib/types";
 import { useForm } from "react-hook-form";
 import { BrandFormValues, brandSchema } from "../lib/definition";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateBrand } from "../lib/actions";
-import { FormUpdateBrandProps } from "@/lib/utils";
+import { FormUpdateBrandProps } from "@/lib/types";
 
 export default function FormUpdateBrand({ data }: FormUpdateBrandProps) {
   const updateActionWithId = async (state: any, formData: FormData) => {

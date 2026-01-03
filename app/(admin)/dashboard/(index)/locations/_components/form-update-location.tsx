@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { initialState } from "@/lib/utils";
-import { FormUpdateLocationProps } from "@/lib/utils";
+import { initialState } from "@/lib/types";
+import { FormUpdateLocationProps } from "@/lib/types";
 import { updateLocation } from "../lib/actions";
 import { LocationFormValues, locationSchema } from "../lib/definition";
 
