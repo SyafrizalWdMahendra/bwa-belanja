@@ -6,8 +6,8 @@ export default async function ProductPage() {
   const data = await getProducts();
 
   return (
-    <>
+    <div>
       <ProductDataTable columns={productsColumns} data={data} />
-    </>
+    </div>
   );
 }

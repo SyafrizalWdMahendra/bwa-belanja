@@ -13,13 +13,38 @@ export async function postProduct(
 ): Promise<ActionResult> {
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
-  const price = formData.get("price");
+  const price = formData.get("price") as string;
   const stock = formData.get("stock") as string;
   const logoFile = formData.get("image") as File;
+  const brandId = formData.get("brandId") as string;
+  const categoryId = formData.get("categoryId") as string;
+  const locationId = formData.get("locationId") as string;
 
-  const createSchema = productSchema.omit({ id: true });
+  const ALLOW_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png"];
 
-  const validation = createSchema.safeParse({ name, image: logoFile });
+  if (!logoFile || logoFile.size === 0) {
+    return {
+      error: "Image is required",
+    };
+  }
+
+  if (!ALLOW_MIME_TYPES.includes(logoFile.type)) {
+    return {
+      error: "Only .jpg, .jpeg, .png formats are supported.",
+    };
+  }
+
+  const createSchema = productSchema.omit({ id: true, image: true });
+
+  const validation = createSchema.safeParse({
+    name,
+    description,
+    price: price ? Number(price) : 0,
+    stock,
+    brandId: brandId ? Number(brandId) : 0,
+    categoryId: categoryId ? Number(categoryId) : 0,
+    locationId: locationId ? Number(locationId) : 0,
+  });
 
   if (!validation.success) {
     return {
@@ -29,27 +54,27 @@ export async function postProduct(
 
   let logoUrl = "";
 
-  if (logoFile && logoFile.size > 0) {
-    try {
-      const { url } = await uploadFile(logoFile, "products");
-      logoUrl = url;
-    } catch (uploadError) {
-      console.error("Upload Error:", uploadError);
-      return { error: "Gagal mengupload gambar produk." };
-    }
+  try {
+    const { url } = await uploadFile(logoFile, "products");
+    logoUrl = url;
+  } catch (uploadError) {
+    console.error("Upload Error:", uploadError);
+    return { error: "Gagal mengupload gambar produk." };
   }
 
   try {
-    // await prisma.product.create({
-    //   data: {
-    //     name: validation.data.name,
-    //     description: validation.data.description,
-    //     price: validation.data.price,
-    //     stock: validation.data.stock,
-    //     createdAt: validation.data.createdAt,
-    //     image: logoUrl,
-    //   },
-    // });
+    await prisma.product.create({
+      data: {
+        name: validation.data.name,
+        description: validation.data.description,
+        price: validation.data.price,
+        stock: validation.data.stock,
+        image: logoUrl,
+        brandId: validation.data.brandId,
+        categoryId: validation.data.categoryId,
+        locationId: validation.data.locationId,
+      },
+    });
   } catch (error) {
     if (logoUrl) {
       await deleteFile(logoUrl);

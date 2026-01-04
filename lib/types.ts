@@ -3,7 +3,7 @@ import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/d
 import { locationSchema } from "@/app/(admin)/dashboard/(index)/locations/lib/definition";
 import { productSchema } from "@/app/(admin)/dashboard/(index)/products/lib/definition";
 import { ActionResult } from "@/types";
-import { Brand, Category, Location, Product } from "@prisma/client";
+import { Brand, Category, Location, Prisma, Product } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import z from "zod";
 
@@ -23,8 +23,8 @@ export type DataBrandTableProps<TData, TValue> = {
 };
 
 export type DataProductTableProps<TData, TValue> = {
-  columns: ColumnDef<z.infer<typeof productSchema>>[];
-  data: z.infer<typeof productSchema>[];
+  columns: ColumnDef<ProductWithRelations>[];
+  data: ProductWithRelations[];
 };
 
 export type PageProps = {
@@ -46,5 +46,24 @@ export type FormUpdateBrandProps = {
 export type FormUpdateProductProps = {
   data: Product;
 };
+
+export type ProductWithRelations = Prisma.ProductGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    createdAt: true;
+    price: true;
+    stock: true;
+    image: true;
+    description: true;
+    brandId: true;
+    categoryId: true;
+    locationId: true;
+    brand: { select: { name: true } };
+    category: { select: { name: true } };
+    location: { select: { name: true } };
+    _count: { select: { orderItems: true } };
+  };
+}>;
 
 export const initialState: ActionResult = { error: "" };

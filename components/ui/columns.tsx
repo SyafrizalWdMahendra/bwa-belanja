@@ -24,7 +24,7 @@ import Image from "next/image";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
 import FormDeleteBrand from "@/app/(admin)/dashboard/(index)/brands/_components/form-brand-delete";
 import { dateFormat, rupiahFormat } from "@/lib/utils";
-import { productSchema } from "@/app/(admin)/dashboard/(index)/products/lib/definition";
+import { ProductWithRelations } from "@/lib/types";
 
 const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   {
@@ -261,15 +261,15 @@ const brandsColumns: ColumnDef<z.infer<typeof brandSchema>>[] = [
   },
 ];
 
-const productsColumns: ColumnDef<z.infer<typeof productSchema>>[] = [
+const productsColumns: ColumnDef<ProductWithRelations>[] = [
   {
     id: "drag",
     header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
+    cell: ({ row }) => <DragHandle id={row.original.id as number} />,
   },
   {
-    id: "name",
-    header: "Name",
+    id: "image",
+    header: "Company Logo",
     cell: ({ row }) => {
       const brand = row.original;
 
@@ -279,9 +279,17 @@ const productsColumns: ColumnDef<z.infer<typeof productSchema>>[] = [
           alt={brand.name}
           width={100}
           height={100}
-          className="object-contain w-25 h-auto"
+          className="object-contain w-10 h-auto"
         />
       );
+    },
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => {
+      const product = row.original;
+      return product.name;
     },
   },
   {

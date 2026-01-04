@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AlertCircle } from "lucide-react";
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { initialState } from "@/lib/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postProduct } from "../lib/actions";
-import { ProductFormValues, productSchema } from "../lib/definition";
+import { ProductFormValues, productFormSchema } from "../lib/definition";
 import {
   Select,
   SelectContent,
@@ -27,21 +27,37 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function FormProduct() {
+type SelectOption = {
+  id: number;
+  name: string;
+};
+
+type FormProductProps = {
+  brands?: SelectOption[];
+  categories?: SelectOption[];
+  locations?: SelectOption[];
+};
+
+export default function FormProduct({
+  brands = [],
+  categories = [],
+  locations = [],
+}: FormProductProps) {
   const [state, formAction, isPending] = useActionState(
     postProduct,
     initialState
   );
 
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(productFormSchema),
     defaultValues: {
       name: "",
       stock: "preorder",
-      price: "" as unknown as number,
-      createdAt: undefined,
+      price: 0,
       description: "",
-      image: "",
+      brandId: 0,
+      categoryId: 0,
+      locationId: 0,
     },
   });
 
@@ -95,7 +111,6 @@ export default function FormProduct() {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Status</SelectLabel>
-                    {/* Sesuaikan value dengan Zod schema ("ready" | "preorder") */}
                     <SelectItem value="ready">Ready Stock</SelectItem>
                     <SelectItem value="preorder">Pre-Order</SelectItem>
                   </SelectGroup>
@@ -118,6 +133,7 @@ export default function FormProduct() {
                   {...field}
                   name="price"
                   type="number"
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -131,7 +147,115 @@ export default function FormProduct() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Product Description</FormLabel>
-              <Textarea placeholder="Type your product description here..." />
+              <FormControl>
+                <Textarea
+                  placeholder="Type your product description here..."
+                  {...field}
+                  name="description"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="brandId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Brand</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(Number(value))}
+                defaultValue={field.value?.toString()}
+                name="brandId"
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select brand" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Brands</SelectLabel>
+                    {brands.map((brand) => (
+                      <SelectItem key={brand.id} value={brand.id.toString()}>
+                        {brand.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="categoryId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(Number(value))}
+                defaultValue={field.value?.toString()}
+                name="categoryId"
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Categories</SelectLabel>
+                    {categories.map((category) => (
+                      <SelectItem
+                        key={category.id}
+                        value={category.id.toString()}
+                      >
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="locationId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(Number(value))}
+                defaultValue={field.value?.toString()}
+                name="locationId"
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select location" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Locations</SelectLabel>
+                    {locations.map((location) => (
+                      <SelectItem
+                        key={location.id}
+                        value={location.id.toString()}
+                      >
+                        {location.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -140,15 +264,19 @@ export default function FormProduct() {
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
+          render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>Image</FormLabel>
               <FormControl>
                 <Input
                   type="file"
-                  placeholder="Input Brand Logo"
-                  {...field}
+                  accept="image/*"
+                  {...fieldProps}
                   name="image"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    onChange(file);
+                  }}
                 />
               </FormControl>
               <FormMessage />

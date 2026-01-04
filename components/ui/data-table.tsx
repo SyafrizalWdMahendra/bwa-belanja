@@ -1146,6 +1146,9 @@ export function ProductDataTable({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const [isMounted, setIsMounted] = React.useState(false);
+
   const sortableId = React.useId();
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
@@ -1153,10 +1156,12 @@ export function ProductDataTable({
     useSensor(KeyboardSensor, {})
   );
 
-  const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
-    [data]
-  );
+  const dataIds = React.useMemo<UniqueIdentifier[]>(() => {
+    if (!data) return [];
+    return data
+      .filter((item) => item.id !== undefined)
+      .map((item) => item.id as number);
+  }, [data]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -1168,6 +1173,12 @@ export function ProductDataTable({
   const toastShownRef = React.useRef(false);
 
   React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isMounted) return;
+
     if (isCreated && !toastShownRef.current) {
       toast.success("Product created successfully!");
       toastShownRef.current = true;
@@ -1190,7 +1201,7 @@ export function ProductDataTable({
       newUrl.searchParams.delete("deleted");
       window.history.replaceState({}, "", newUrl.toString());
     }
-  }, [isCreated, isUpdated, isDeleted]);
+  }, [isCreated, isUpdated, isDeleted, isMounted]);
 
   const table = useReactTable({
     data,
@@ -1226,6 +1237,139 @@ export function ProductDataTable({
         return arrayMove(data, oldIndex, newIndex);
       });
     }
+  }
+
+  if (!isMounted) {
+    return (
+      <Tabs
+        defaultValue="outline"
+        className="w-full flex-col justify-start gap-6"
+      >
+        <div className="flex items-center justify-between px-4 lg:px-6">
+          <Label htmlFor="view-selector" className="sr-only">
+            Products
+          </Label>
+          <Select defaultValue="outline">
+            <SelectTrigger
+              className="flex w-fit @4xl/main:hidden"
+              size="sm"
+              id="view-selector"
+            >
+              <SelectValue placeholder="Select a view" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="outline">Outline</SelectItem>
+              <SelectItem value="past-performance">Past Performance</SelectItem>
+              <SelectItem value="key-personnel">Key Personnel</SelectItem>
+              <SelectItem value="focus-documents">Focus Documents</SelectItem>
+            </SelectContent>
+          </Select>
+          <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
+            <TabsTrigger value="outline">Outline</TabsTrigger>
+            <TabsTrigger value="past-performance">
+              Past Performance <Badge variant="secondary">3</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="key-personnel">
+              Key Personnel <Badge variant="secondary">2</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
+          </TabsList>
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <IconLayoutColumns />
+                  <span className="hidden lg:inline">Customize Columns</span>
+                  <span className="lg:hidden">Columns</span>
+                  <IconChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {table
+                  .getAllColumns()
+                  .filter(
+                    (column) =>
+                      typeof column.accessorFn !== "undefined" &&
+                      column.getCanHide()
+                  )
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Link href="/dashboard/products/create" className="sm:inline-flex">
+              <Button size="sm" className="cursor-pointer">
+                <IconPlus />
+                <span className="hidden lg:inline">Add Products</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <TabsContent
+          value="outline"
+          className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
+        >
+          <div className="overflow-hidden rounded-lg border">
+            <Table>
+              <TableHeader className="bg-muted sticky top-0 z-10">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} colSpan={header.colSpan}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
+      </Tabs>
+    );
   }
 
   return (
