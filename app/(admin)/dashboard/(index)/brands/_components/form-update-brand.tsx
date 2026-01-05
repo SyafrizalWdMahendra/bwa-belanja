@@ -84,7 +84,7 @@ export default function FormUpdateBrand({ data }: FormUpdateBrandProps) {
 
         <div className="flex gap-4">
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Save Changes"}
+            {isPending ? "Updating..." : "Save Changes"}
           </Button>
           <Button
             variant="outline"

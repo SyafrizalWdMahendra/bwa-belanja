@@ -20,3 +20,11 @@ export function dateFormat(date: Date | null, format = "DD MMMM YYYY") {
 
   return dayjs(date).format(format);
 }
+
+export function parseProductFormData(formData: FormData) {
+  const rawData = Object.fromEntries(formData);
+  const logoFile = rawData.image as File;
+  const { image, ...textData } = rawData;
+
+  return { logoFile, textData: rawData };
+}

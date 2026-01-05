@@ -13,16 +13,14 @@ export function DataTableSkeleton() {
     <div className="flex w-full flex-col gap-6">
       <div className="flex items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-37.5 lg:hidden" />
-
           <div className="hidden items-center gap-2 lg:flex">
-            <Skeleton className="h-8 w-20 " />
+            <Skeleton className="h-8 w-62.5 " />
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-50 hidden lg:block" />{" "}
-          <Skeleton className="h-9 w-35" />
+          <Skeleton className="h-9 w-30 hidden lg:block" />{" "}
+          <Skeleton className="h-9 w-32" />
         </div>
       </div>
 

@@ -277,6 +277,7 @@ export default function FormProduct({
                     const file = e.target.files?.[0];
                     onChange(file);
                   }}
+                  multiple
                 />
               </FormControl>
               <FormMessage />

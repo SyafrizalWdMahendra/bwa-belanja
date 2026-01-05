@@ -97,7 +97,6 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/definition";
 import {
   DataBrandTableProps,
@@ -107,6 +106,10 @@ import {
 } from "@/lib/types";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
 import { productSchema } from "@/app/(admin)/dashboard/(index)/products/lib/definition";
+import { DataTableToolbar } from "@/app/(admin)/dashboard/(index)/products/_components/data-table-toolbar";
+import { DataTablePagination } from "@/app/(admin)/dashboard/(index)/products/_components/data-table-pagination";
+import { useCrudToast } from "@/hooks/use-product-toast";
+import { useDragHandler } from "@/hooks/use-handle-drag";
 
 export function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
@@ -180,39 +183,7 @@ export function CategoryDataTable({
     [data]
   );
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const isCreated = searchParams.get("created");
-  const isUpdated = searchParams.get("updated");
-  const isDeleted = searchParams.get("deleted");
-
-  const toastShownRef = React.useRef(false);
-
-  React.useEffect(() => {
-    if (isCreated && !toastShownRef.current) {
-      toast.success("Category created successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("created");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isUpdated && !toastShownRef.current) {
-      toast.success("Category updated successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("updated");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isDeleted && !toastShownRef.current) {
-      toast.success("Category deleted successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("deleted");
-      window.history.replaceState({}, "", newUrl.toString());
-    }
-  }, [isCreated, isUpdated, isDeleted]);
+  useCrudToast("Category");
 
   const table = useReactTable({
     data,
@@ -506,39 +477,7 @@ export function LocationDataTable({
     [data]
   );
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const isCreated = searchParams.get("created");
-  const isUpdated = searchParams.get("updated");
-  const isDeleted = searchParams.get("deleted");
-
-  const toastShownRef = React.useRef(false);
-
-  React.useEffect(() => {
-    if (isCreated && !toastShownRef.current) {
-      toast.success("Location created successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("created");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isUpdated && !toastShownRef.current) {
-      toast.success("Location updated successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("updated");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isDeleted && !toastShownRef.current) {
-      toast.success("Location deleted successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("deleted");
-      window.history.replaceState({}, "", newUrl.toString());
-    }
-  }, [isCreated, isUpdated, isDeleted]);
+  useCrudToast("Location");
 
   const table = useReactTable({
     data,
@@ -832,39 +771,7 @@ export function BrandDataTable({
     [data]
   );
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const isCreated = searchParams.get("created");
-  const isUpdated = searchParams.get("updated");
-  const isDeleted = searchParams.get("deleted");
-
-  const toastShownRef = React.useRef(false);
-
-  React.useEffect(() => {
-    if (isCreated && !toastShownRef.current) {
-      toast.success("Brand created successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("created");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isUpdated && !toastShownRef.current) {
-      toast.success("Brand updated successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("updated");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isDeleted && !toastShownRef.current) {
-      toast.success("Brand deleted successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("deleted");
-      window.history.replaceState({}, "", newUrl.toString());
-    }
-  }, [isCreated, isUpdated, isDeleted]);
+  useCrudToast("Brand");
 
   const table = useReactTable({
     data,
@@ -1146,8 +1053,10 @@ export function ProductDataTable({
     pageIndex: 0,
     pageSize: 10,
   });
-
   const [isMounted, setIsMounted] = React.useState(false);
+  const { handleDragEnd } = useDragHandler(setData);
+
+  useCrudToast("Product");
 
   const sortableId = React.useId();
   const sensors = useSensors(
@@ -1156,52 +1065,13 @@ export function ProductDataTable({
     useSensor(KeyboardSensor, {})
   );
 
-  const dataIds = React.useMemo<UniqueIdentifier[]>(() => {
-    if (!data) return [];
-    return data
-      .filter((item) => item.id !== undefined)
-      .map((item) => item.id as number);
-  }, [data]);
-
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const isCreated = searchParams.get("created");
-  const isUpdated = searchParams.get("updated");
-  const isDeleted = searchParams.get("deleted");
-
-  const toastShownRef = React.useRef(false);
-
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  React.useEffect(() => {
-    if (!isMounted) return;
-
-    if (isCreated && !toastShownRef.current) {
-      toast.success("Product created successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("created");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isUpdated && !toastShownRef.current) {
-      toast.success("Product updated successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("updated");
-      window.history.replaceState({}, "", newUrl.toString());
-    } else if (isDeleted && !toastShownRef.current) {
-      toast.success("Product deleted successfully!");
-      toastShownRef.current = true;
-
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("deleted");
-      window.history.replaceState({}, "", newUrl.toString());
-    }
-  }, [isCreated, isUpdated, isDeleted, isMounted]);
+  const dataIds = React.useMemo(() => {
+    return data?.map((item: any) => item.id) || [];
+  }, [data]);
 
   const table = useReactTable({
     data,
@@ -1228,149 +1098,35 @@ export function ProductDataTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id);
-        const newIndex = dataIds.indexOf(over.id);
-        return arrayMove(data, oldIndex, newIndex);
-      });
+  const renderTableContent = () => {
+    if (!isMounted) {
+      return (
+        <TableRow>
+          <TableCell colSpan={columns.length} className="h-24 text-center">
+            Loading data...
+          </TableCell>
+        </TableRow>
+      );
     }
-  }
 
-  if (!isMounted) {
+    if (table.getRowModel().rows?.length) {
+      return (
+        <SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
+          {table.getRowModel().rows.map((row) => (
+            <DraggableRow key={row.id} row={row} />
+          ))}
+        </SortableContext>
+      );
+    }
+
     return (
-      <Tabs
-        defaultValue="outline"
-        className="w-full flex-col justify-start gap-6"
-      >
-        <div className="flex items-center justify-between px-4 lg:px-6">
-          <Label htmlFor="view-selector" className="sr-only">
-            Products
-          </Label>
-          <Select defaultValue="outline">
-            <SelectTrigger
-              className="flex w-fit @4xl/main:hidden"
-              size="sm"
-              id="view-selector"
-            >
-              <SelectValue placeholder="Select a view" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="outline">Outline</SelectItem>
-              <SelectItem value="past-performance">Past Performance</SelectItem>
-              <SelectItem value="key-personnel">Key Personnel</SelectItem>
-              <SelectItem value="focus-documents">Focus Documents</SelectItem>
-            </SelectContent>
-          </Select>
-          <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-            <TabsTrigger value="outline">Outline</TabsTrigger>
-            <TabsTrigger value="past-performance">
-              Past Performance <Badge variant="secondary">3</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="key-personnel">
-              Key Personnel <Badge variant="secondary">2</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
-          </TabsList>
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <IconLayoutColumns />
-                  <span className="hidden lg:inline">Customize Columns</span>
-                  <span className="lg:hidden">Columns</span>
-                  <IconChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {table
-                  .getAllColumns()
-                  .filter(
-                    (column) =>
-                      typeof column.accessorFn !== "undefined" &&
-                      column.getCanHide()
-                  )
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Link href="/dashboard/products/create" className="sm:inline-flex">
-              <Button size="sm" className="cursor-pointer">
-                <IconPlus />
-                <span className="hidden lg:inline">Add Products</span>
-              </Button>
-            </Link>
-          </div>
-        </div>
-        <TabsContent
-          value="outline"
-          className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
-        >
-          <div className="overflow-hidden rounded-lg border">
-            <Table>
-              <TableHeader className="bg-muted sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </TabsContent>
-      </Tabs>
+      <TableRow>
+        <TableCell colSpan={columns.length} className="h-24 text-center">
+          No results.
+        </TableCell>
+      </TableRow>
     );
-  }
+  };
 
   return (
     <Tabs
@@ -1378,24 +1134,8 @@ export function ProductDataTable({
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
-          Products
-        </Label>
-        <Select defaultValue="outline">
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
-          >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
-            <SelectItem value="key-personnel">Key Personnel</SelectItem>
-            <SelectItem value="focus-documents">Focus Documents</SelectItem>
-          </SelectContent>
-        </Select>
+        <DataTableToolbar table={table} />
+
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
           <TabsTrigger value="outline">Outline</TabsTrigger>
           <TabsTrigger value="past-performance">
@@ -1406,196 +1146,58 @@ export function ProductDataTable({
           </TabsTrigger>
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
         </TabsList>
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Link href="/dashboard/products/create" className="sm:inline-flex">
-            <Button size="sm" className="cursor-pointer">
-              <IconPlus />
-              <span className="hidden lg:inline">Add Products</span>
-            </Button>
-          </Link>
-        </div>
       </div>
+
       <TabsContent
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg border">
           <DndContext
+            id={sortableId}
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
             onDragEnd={handleDragEnd}
             sensors={sensors}
-            id={sortableId}
           >
             <Table>
               <TableHeader className="bg-muted sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      );
-                    })}
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id} colSpan={header.colSpan}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
                   </TableRow>
                 ))}
               </TableHeader>
               <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
-                  <SortableContext
-                    items={dataIds}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
-                    ))}
-                  </SortableContext>
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
+                {renderTableContent()}
               </TableBody>
             </Table>
           </DndContext>
         </div>
-        <div className="flex items-center justify-between px-4">
-          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+
+        {isMounted && <DataTablePagination table={table} />}
+      </TabsContent>
+
+      {["past-performance", "key-personnel", "focus-documents"].map((tab) => (
+        <TabsContent
+          key={tab}
+          value={tab}
+          className="flex flex-col px-4 lg:px-6"
+        >
+          <div className="aspect-video w-full flex-1 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground">
+            Content for {tab.replace("-", " ")}
           </div>
-          <div className="flex w-full items-center gap-8 lg:w-fit">
-            <div className="hidden items-center gap-2 lg:flex">
-              <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
-              </Label>
-              <Select
-                value={`${table.getState().pagination.pageSize}`}
-                onValueChange={(value) => {
-                  table.setPageSize(Number(value));
-                }}
-              >
-                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="ml-auto flex items-center gap-2 lg:ml-0">
-              <Button
-                variant="outline"
-                className="hidden h-8 w-8 p-0 lg:flex"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to previous page</span>
-                <IconChevronLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to next page</span>
-                <IconChevronRight />
-              </Button>
-              <Button
-                variant="outline"
-                className="hidden size-8 lg:flex"
-                size="icon"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </TabsContent>
-      <TabsContent
-        value="past-performance"
-        className="flex flex-col px-4 lg:px-6"
-      >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent
-        value="focus-documents"
-        className="flex flex-col px-4 lg:px-6"
-      >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
+        </TabsContent>
+      ))}
     </Tabs>
   );
 }

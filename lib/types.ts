@@ -4,7 +4,7 @@ import { locationSchema } from "@/app/(admin)/dashboard/(index)/locations/lib/de
 import { productSchema } from "@/app/(admin)/dashboard/(index)/products/lib/definition";
 import { ActionResult } from "@/types";
 import { Brand, Category, Location, Prisma, Product } from "@prisma/client";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Table } from "@tanstack/react-table";
 import z from "zod";
 
 export type DataCategoryTableProps<TData, TValue> = {
@@ -67,3 +67,11 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
 }>;
 
 export const initialState: ActionResult = { error: "" };
+
+export type DataTablePaginationProps<TData> = {
+  table: Table<TData>;
+};
+
+export type DataTableToolbarProps<TData> = {
+  table: Table<TData>;
+};

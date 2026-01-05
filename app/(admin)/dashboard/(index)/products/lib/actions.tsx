@@ -6,45 +6,26 @@ import prisma from "@/lib/prisma";
 import type { ActionResult } from "@/types";
 import { productSchema } from "./definition";
 import { deleteFile, replaceFile, uploadFile } from "./storage";
+import { parseProductFormData } from "@/lib/utils";
 
 export async function postProduct(
   _: unknown,
   formData: FormData
 ): Promise<ActionResult> {
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const price = formData.get("price") as string;
-  const stock = formData.get("stock") as string;
-  const logoFile = formData.get("image") as File;
-  const brandId = formData.get("brandId") as string;
-  const categoryId = formData.get("categoryId") as string;
-  const locationId = formData.get("locationId") as string;
+  const parseRawData = parseProductFormData(formData);
 
   const ALLOW_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png"];
 
-  if (!logoFile || logoFile.size === 0) {
-    return {
-      error: "Image is required",
-    };
+  if (parseRawData.logoFile && parseRawData.logoFile.size > 0) {
+    if (!ALLOW_MIME_TYPES.includes(parseRawData.logoFile.type)) {
+      return {
+        error: "Only .jpg, .jpeg, .png formats are supported.",
+      };
+    }
   }
 
-  if (!ALLOW_MIME_TYPES.includes(logoFile.type)) {
-    return {
-      error: "Only .jpg, .jpeg, .png formats are supported.",
-    };
-  }
-
-  const createSchema = productSchema.omit({ id: true, image: true });
-
-  const validation = createSchema.safeParse({
-    name,
-    description,
-    price: price ? Number(price) : 0,
-    stock,
-    brandId: brandId ? Number(brandId) : 0,
-    categoryId: categoryId ? Number(categoryId) : 0,
-    locationId: locationId ? Number(locationId) : 0,
-  });
+  const definition = productSchema.omit({ id: true, image: true });
+  const validation = definition.safeParse(parseRawData);
 
   if (!validation.success) {
     return {
@@ -55,7 +36,7 @@ export async function postProduct(
   let logoUrl = "";
 
   try {
-    const { url } = await uploadFile(logoFile, "products");
+    const { url } = await uploadFile(parseRawData.logoFile, "products");
     logoUrl = url;
   } catch (uploadError) {
     console.error("Upload Error:", uploadError);
@@ -65,14 +46,8 @@ export async function postProduct(
   try {
     await prisma.product.create({
       data: {
-        name: validation.data.name,
-        description: validation.data.description,
-        price: validation.data.price,
-        stock: validation.data.stock,
+        ...validation.data,
         image: logoUrl,
-        brandId: validation.data.brandId,
-        categoryId: validation.data.categoryId,
-        locationId: validation.data.locationId,
       },
     });
   } catch (error) {
@@ -95,13 +70,26 @@ export async function updateProduct(
   _: unknown,
   formData: FormData
 ): Promise<ActionResult> {
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const price = formData.get("price");
-  const stock = formData.get("stock") as string;
-  const logoFile = formData.get("logo") as File;
+  const parseRawData = parseProductFormData(formData);
+  console.log("SERVER RECEIVE:", parseRawData);
 
-  const validation = productSchema.safeParse({ id, name, image: logoFile });
+  const ALLOW_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png"];
+
+  if (parseRawData.logoFile && parseRawData.logoFile.size > 0) {
+    if (!ALLOW_MIME_TYPES.includes(parseRawData.logoFile.type)) {
+      return {
+        error: "Only .jpg, .jpeg, .png formats are supported.",
+      };
+    }
+  }
+
+  const definition = productSchema.omit({
+    id: true,
+    image: true,
+    createdAt: true,
+  });
+
+  const validation = definition.safeParse(parseRawData.textData);
 
   if (!validation.success) {
     return {
@@ -121,11 +109,11 @@ export async function updateProduct(
 
     let logoUrl = existingProduct.image;
 
-    if (logoFile && logoFile.size > 0) {
+    if (parseRawData.logoFile && parseRawData.logoFile.size > 0) {
       try {
         const { url } = await replaceFile(
           existingProduct.image,
-          logoFile,
+          parseRawData.logoFile,
           "products"
         );
         logoUrl = url;
@@ -138,14 +126,14 @@ export async function updateProduct(
     await prisma.product.update({
       where: { id: Number(id) },
       data: {
-        name: validation.data.name,
+        ...validation.data,
         image: logoUrl,
       },
     });
   } catch (error) {
-    console.error("Error updating brand:", error);
+    console.error("Error updating product:", error);
     return {
-      error: "Terjadi kesalahan saat mengupdate data merek.",
+      error: "Terjadi kesalahan saat mengupdate data produk.",
     };
   }
 

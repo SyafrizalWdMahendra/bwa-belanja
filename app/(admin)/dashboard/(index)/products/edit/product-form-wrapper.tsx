@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { PageProps } from "@/lib/types";
 import FormUpdateProduct from "../_components/form-update-product";
 import { getProductById } from "../lib/actions";
+import { getProductFormData } from "../lib/data";
 
 export default async function ProductFormWrapper({ params }: PageProps) {
   const { id } = await params;
@@ -12,5 +13,14 @@ export default async function ProductFormWrapper({ params }: PageProps) {
     return notFound();
   }
 
-  return <FormUpdateProduct data={data} />;
+  const { brands, categories, locations } = await getProductFormData();
+
+  return (
+    <FormUpdateProduct
+      brands={brands}
+      categories={categories}
+      locations={locations}
+      product={data}
+    />
+  );
 }

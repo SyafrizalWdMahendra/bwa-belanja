@@ -8,7 +8,6 @@ export function FormUpdateProductSkeleton() {
 
         <Skeleton className="h-10 w-full" />
       </div>
-
       <div className="space-y-2">
         <Skeleton className="h-4 w-32" />
 
@@ -22,7 +21,22 @@ export function FormUpdateProductSkeleton() {
       <div className="space-y-2">
         <Skeleton className="h-4 w-32" />
 
-        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-15 w-full" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-32" />
+
+        <Skeleton className="h-10 w-full" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-32" />
+
+        <Skeleton className="h-10 w-full" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-32" />
+
+        <Skeleton className="h-10 w-full" />
       </div>
       <div className="space-y-2">
         <Skeleton className="h-4 w-32" />

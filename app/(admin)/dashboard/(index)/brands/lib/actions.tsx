@@ -14,6 +14,16 @@ export async function postBrand(
   const name = formData.get("name") as string;
   const logoFile = formData.get("logo") as File;
 
+  const ALLOW_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png"];
+
+  if (logoFile && logoFile.size > 0) {
+    if (!ALLOW_MIME_TYPES.includes(logoFile.type)) {
+      return {
+        error: "Only .jpg, .jpeg, .png formats are supported.",
+      };
+    }
+  }
+
   const createSchema = brandSchema.omit({ id: true });
 
   const validation = createSchema.safeParse({ name, logo: logoFile });
