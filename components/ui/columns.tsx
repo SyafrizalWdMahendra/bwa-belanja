@@ -25,6 +25,7 @@ import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definiti
 import FormDeleteBrand from "@/app/(admin)/dashboard/(index)/brands/_components/form-brand-delete";
 import { dateFormat, rupiahFormat } from "@/lib/utils";
 import { ProductWithRelations } from "@/lib/types";
+import FormDeleteProduct from "@/app/(admin)/dashboard/(index)/products/_components/form-delete-product";
 
 const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
   {
@@ -349,7 +350,7 @@ const productsColumns: ColumnDef<ProductWithRelations>[] = [
               </DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
-            {/* <FormDeleteBrand id={product.id} /> */}
+            <FormDeleteProduct id={product.id} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

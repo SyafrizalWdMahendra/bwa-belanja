@@ -25,7 +25,7 @@ export async function postProduct(
   }
 
   const definition = productSchema.omit({ id: true, image: true });
-  const validation = definition.safeParse(parseRawData);
+  const validation = definition.safeParse(parseRawData.textData);
 
   if (!validation.success) {
     return {
@@ -71,7 +71,6 @@ export async function updateProduct(
   formData: FormData
 ): Promise<ActionResult> {
   const parseRawData = parseProductFormData(formData);
-  console.log("SERVER RECEIVE:", parseRawData);
 
   const ALLOW_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png"];
 
@@ -148,37 +147,30 @@ export async function getProductById(id: number) {
   return product;
 }
 
-// export async function deleteBrand(id: number): Promise<ActionResult> {
-//   try {
-//     const brand = await prisma.brand.findUnique({
-//       where: { id: Number(id) },
-//       select: { logo: true },
-//     });
+export async function deleteProduct(id: number): Promise<ActionResult> {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: Number(id) },
+      select: { image: true },
+    });
 
-//     if (!brand) {
-//       return { error: "Brand tidak ditemukan." };
-//     }
+    if (!product) {
+      return { error: "Produk tidak ditemukan." };
+    }
 
-//     await prisma.brand.delete({
-//       where: { id: Number(id) },
-//     });
+    await prisma.product.delete({
+      where: { id: Number(id) },
+    });
 
-//     if (brand.logo) {
-//       await deleteFile(brand.logo);
-//     }
-//   } catch (error) {
-//     console.error("Error deleting brand:", error);
-//     return {
-//       error: "Terjadi kesalahan saat menghapus data merek.",
-//     };
-//   }
-//   revalidatePath("/dashboard/brands");
-//   return redirect("/dashboard/brands?deleted=true");
-// }
-
-// export async function getBrandById(id: number) {
-//   const brand = await prisma.brand.findUnique({
-//     where: { id },
-//   });
-//   return brand;
-// }
+    if (product.image) {
+      await deleteFile(product.image);
+    }
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return {
+      error: "Terjadi kesalahan saat menghapus data produk.",
+    };
+  }
+  revalidatePath("/dashboard/products");
+  return redirect("/dashboard/products?deleted=true");
+}
