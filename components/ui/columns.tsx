@@ -24,7 +24,7 @@ import Image from "next/image";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
 import FormDeleteBrand from "@/app/(admin)/dashboard/(index)/brands/_components/form-brand-delete";
 import { dateFormat, rupiahFormat } from "@/lib/utils";
-import { ProductWithRelations } from "@/lib/types";
+import { ProductWithRelations, TOrderColumn } from "@/lib/types";
 import FormDeleteProduct from "@/app/(admin)/dashboard/(index)/products/_components/form-delete-product";
 
 const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
@@ -358,4 +358,84 @@ const productsColumns: ColumnDef<ProductWithRelations>[] = [
   },
 ];
 
-export { categoryColumns, locationColumns, brandsColumns, productsColumns };
+const orderColumns: ColumnDef<TOrderColumn>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "products",
+    header: "Products",
+    cell: ({ row }) => {
+      const order = row.original;
+      return order.products.map((p, i) => {
+        <div key={p.name + i} className="inline-flex items-center gap-5">
+          <Image
+            src={p.image}
+            alt={p.name}
+            width={100}
+            height={100}
+            className="object-contain w-10 h-auto"
+          />
+        </div>;
+      });
+    },
+  },
+  {
+    accessorKey: "customer_name",
+    header: "Customer Name",
+  },
+  {
+    accessorKey: "price",
+    header: "Total Price",
+    cell: ({ row }) => rupiahFormat(row.original.price),
+  },
+  {
+    accessorKey: "status",
+    header: "Status Order",
+    cell: ({ row }) => {
+      return (
+        <Badge
+          variant={row.original.status == "failed" ? "destructive" : "default"}
+        >
+          {row.original.status}
+        </Badge>
+      );
+    },
+  },
+];
+
+export {
+  categoryColumns,
+  locationColumns,
+  brandsColumns,
+  productsColumns,
+  orderColumns,
+};

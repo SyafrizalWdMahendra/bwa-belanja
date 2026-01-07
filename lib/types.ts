@@ -3,7 +3,14 @@ import { categorySchema } from "@/app/(admin)/dashboard/(index)/categories/lib/d
 import { locationSchema } from "@/app/(admin)/dashboard/(index)/locations/lib/definition";
 import { productSchema } from "@/app/(admin)/dashboard/(index)/products/lib/definition";
 import { ActionResult } from "@/types";
-import { Brand, Category, Location, Prisma, Product } from "@prisma/client";
+import {
+  Brand,
+  Category,
+  Location,
+  Prisma,
+  Product,
+  StatusOrder,
+} from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
 import z from "zod";
 
@@ -25,6 +32,11 @@ export type DataBrandTableProps<TData, TValue> = {
 export type DataProductTableProps<TData, TValue> = {
   columns: ColumnDef<ProductWithRelations>[];
   data: ProductWithRelations[];
+};
+
+export type DataOrderTableProps<TData, TValue> = {
+  columns: ColumnDef<TOrderColumn>[];
+  data: TOrderColumn[];
 };
 
 export type PageProps = {
@@ -74,4 +86,17 @@ export type DataTablePaginationProps<TData> = {
 
 export type DataTableToolbarProps<TData> = {
   table: Table<TData>;
+};
+
+type TProduct = {
+  name: string;
+  image: string;
+};
+
+export type TOrderColumn = {
+  id: number;
+  products: TProduct[];
+  customer_name: string;
+  price: number;
+  status: StatusOrder;
 };
