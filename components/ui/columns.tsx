@@ -24,7 +24,11 @@ import Image from "next/image";
 import { brandSchema } from "@/app/(admin)/dashboard/(index)/brands/lib/definition";
 import FormDeleteBrand from "@/app/(admin)/dashboard/(index)/brands/_components/form-brand-delete";
 import { dateFormat, rupiahFormat } from "@/lib/utils";
-import { ProductWithRelations, TOrderColumn } from "@/lib/types";
+import {
+  ProductWithRelations,
+  TCustomerColumn,
+  TOrderColumn,
+} from "@/lib/types";
 import FormDeleteProduct from "@/app/(admin)/dashboard/(index)/products/_components/form-delete-product";
 
 const categoryColumns: ColumnDef<z.infer<typeof categorySchema>>[] = [
@@ -432,10 +436,31 @@ const orderColumns: ColumnDef<TOrderColumn>[] = [
   },
 ];
 
+const customersColumns: ColumnDef<TCustomerColumn>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+  },
+  {
+    accessorKey: "total_transactions",
+    header: "Total Transactions",
+  },
+];
+
 export {
   categoryColumns,
   locationColumns,
   brandsColumns,
   productsColumns,
   orderColumns,
+  customersColumns,
 };

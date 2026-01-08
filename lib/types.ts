@@ -39,6 +39,11 @@ export type DataOrderTableProps<TData, TValue> = {
   data: TOrderColumn[];
 };
 
+export type DataCustomerTableProps<TData, TValue> = {
+  columns: ColumnDef<TCustomerColumn>[];
+  data: TCustomerColumn[];
+};
+
 export type PageProps = {
   params: Promise<{ id: string }>;
 };
@@ -99,4 +104,11 @@ export type TOrderColumn = {
   customer_name: string;
   price: number;
   status: StatusOrder;
+};
+
+export type TCustomerColumn = {
+  id: number;
+  name: string;
+  email: string;
+  total_transactions: number;
 };
