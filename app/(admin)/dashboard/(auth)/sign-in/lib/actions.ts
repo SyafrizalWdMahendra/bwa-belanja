@@ -24,8 +24,8 @@ export async function SignIn(
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
+    const user = await prisma.user.findFirst({
+      where: { email: validation.data.email },
     });
 
     if (!user || !user.password) {
@@ -36,6 +36,10 @@ export async function SignIn(
 
     if (!validPassword) {
       return { error: "Email atau password salah" };
+    }
+
+    if (user.role !== "superadmin") {
+      return { error: "Akses ditolak: Akun Anda bukan Superadmin." };
     }
 
     const session = await lucia.createSession(user.id, {});

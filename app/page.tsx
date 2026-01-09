@@ -1,5 +1,11 @@
-import React from "react";
+import LandingPageHeader from "./(customer)/(auth)/_components/landing-page-header";
+import LandingPageSection from "./(customer)/(auth)/_components/landing-page-section";
 
-export default function LandingPage() {
-  return <div>LandingPage</div>;
+export default async function LandingPage() {
+  return (
+    <div className="flex flex-col min-h-screen items-center justify-center bg-zinc-50 text-black">
+      <LandingPageHeader />
+      <LandingPageSection />
+    </div>
+  );
 }
