@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 import { lucia } from "@/lib/auth";
+import { Action } from "sonner";
+import { registerSchema } from "./definition";
 
 export async function SignIn(
   _: unknown,
@@ -50,5 +52,42 @@ export async function SignIn(
     return { error: "Terjadi kesalahan internal server" };
   }
 
-  return redirect("/dashboard");
+  return redirect("/");
+}
+
+export async function SignUp(
+  _: unknown,
+  formData: FormData
+): Promise<ActionResult> {
+  const parse = registerSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!parse.success) {
+    return {
+      error: parse.error.issues[0].message,
+    };
+  }
+
+  const hashedPassword = bcrypt.hashSync(parse.data.password, 12);
+
+  try {
+    await prisma.user.create({
+      data: {
+        username: parse.data.name,
+        email: parse.data.email,
+        password: hashedPassword,
+        role: "customer",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Failed to sign up",
+    };
+  }
+
+  return redirect("/sign-in");
 }
