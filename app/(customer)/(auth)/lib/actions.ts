@@ -116,3 +116,23 @@ export async function Logout(
   );
   return redirect("/");
 }
+
+export async function getCategories() {
+  try {
+    const categories = prisma.category.findMany({
+      include: {
+        _count: {
+          select: {
+            products: true,
+          },
+        },
+      },
+    });
+    return categories;
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Failed to get categories data",
+    };
+  }
+}
