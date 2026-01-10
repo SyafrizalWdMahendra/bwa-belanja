@@ -119,7 +119,7 @@ export async function Logout(
 
 export async function getCategories() {
   try {
-    const categories = prisma.category.findMany({
+    const categories = await prisma.category.findMany({
       include: {
         _count: {
           select: {
@@ -139,7 +139,7 @@ export async function getCategories() {
 
 export async function getProducts() {
   try {
-    const products = prisma.product.findMany({
+    const products = await prisma.product.findMany({
       include: {
         category: true,
       },
@@ -149,6 +149,18 @@ export async function getProducts() {
     console.log(error);
     return {
       error: "Failed to get products",
+    };
+  }
+}
+
+export async function getBrands() {
+  try {
+    const brands = await prisma.brand.findMany();
+    return brands;
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Failed to get brands",
     };
   }
 }
