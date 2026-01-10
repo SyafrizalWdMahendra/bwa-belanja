@@ -136,3 +136,19 @@ export async function getCategories() {
     };
   }
 }
+
+export async function getProducts() {
+  try {
+    const products = prisma.product.findMany({
+      include: {
+        category: true,
+      },
+    });
+    return products;
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Failed to get products",
+    };
+  }
+}
