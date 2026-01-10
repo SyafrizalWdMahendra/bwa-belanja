@@ -118,6 +118,7 @@ export async function Logout(
 }
 
 export async function getCategories() {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   try {
     const categories = await prisma.category.findMany({
       include: {
@@ -140,8 +141,16 @@ export async function getCategories() {
 export async function getProducts() {
   try {
     const products = await prisma.product.findMany({
-      include: {
-        category: true,
+      select: {
+        name: true,
+        image: true,
+        id: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        price: true,
       },
     });
     return products;
