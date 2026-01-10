@@ -9,10 +9,7 @@ import prisma from "@/lib/prisma";
 import { getUser, lucia } from "@/lib/auth";
 import { registerSchema } from "./definition";
 
-export async function SignIn(
-  _: unknown,
-  formData: FormData
-): Promise<ActionResult> {
+async function SignIn(_: unknown, formData: FormData): Promise<ActionResult> {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -55,10 +52,7 @@ export async function SignIn(
   return redirect("/");
 }
 
-export async function SignUp(
-  _: unknown,
-  formData: FormData
-): Promise<ActionResult> {
+async function SignUp(_: unknown, formData: FormData): Promise<ActionResult> {
   const parse = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -92,10 +86,7 @@ export async function SignUp(
   return redirect("/?login=true");
 }
 
-export async function Logout(
-  _: unknown,
-  data: FormData
-): Promise<ActionResult> {
+async function Logout(_: unknown, data: FormData): Promise<ActionResult> {
   console.log("Logout action called");
 
   const { session } = await getUser();
@@ -117,59 +108,4 @@ export async function Logout(
   return redirect("/");
 }
 
-export async function getCategories() {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  try {
-    const categories = await prisma.category.findMany({
-      include: {
-        _count: {
-          select: {
-            products: true,
-          },
-        },
-      },
-    });
-    return categories;
-  } catch (error) {
-    console.log(error);
-    return {
-      error: "Failed to get categories data",
-    };
-  }
-}
-
-export async function getProducts() {
-  try {
-    const products = await prisma.product.findMany({
-      select: {
-        name: true,
-        image: true,
-        id: true,
-        category: {
-          select: {
-            name: true,
-          },
-        },
-        price: true,
-      },
-    });
-    return products;
-  } catch (error) {
-    console.log(error);
-    return {
-      error: "Failed to get products",
-    };
-  }
-}
-
-export async function getBrands() {
-  try {
-    const brands = await prisma.brand.findMany();
-    return brands;
-  } catch (error) {
-    console.log(error);
-    return {
-      error: "Failed to get brands",
-    };
-  }
-}
+export { SignIn, SignUp, Logout };

@@ -1,6 +1,6 @@
 import React from "react";
-import { getCategories } from "../lib/actions";
 import Link from "next/link";
+import { getCategories } from "../lib/actions";
 
 export default async function ListCategory() {
   const categories = await getCategories();

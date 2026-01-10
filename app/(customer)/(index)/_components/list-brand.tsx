@@ -1,7 +1,7 @@
 import React from "react";
-import { getBrands } from "../lib/actions";
 import Link from "next/link";
 import Image from "next/image";
+import { getBrands } from "../lib/actions";
 
 export default async function ListBrand() {
   const brands = await getBrands();

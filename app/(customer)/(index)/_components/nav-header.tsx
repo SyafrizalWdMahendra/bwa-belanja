@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthSession } from "./auth-session";
+import { AuthSession } from "../../(auth)/_components/auth-session";
 
 export default function NavHeader() {
   return (

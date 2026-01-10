@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
-import ProfileItem from "./profile-item";
+import ProfileItem from "../../(index)/_components/profile-item";
 import { LogoutForm } from "./logout-form";
 
 export const AuthSession = async () => {
