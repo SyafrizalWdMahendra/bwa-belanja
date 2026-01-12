@@ -1,13 +1,9 @@
 "use client";
+
 import { useFilter } from "@/hooks/use-filter";
+import { FilterCheckboxItemProps } from "@/lib/types";
 import { StockProduct } from "@prisma/client";
 import React, { ChangeEvent } from "react";
-
-interface FilterCheckboxItemProps {
-  id: string;
-  value: string;
-  type?: "stock" | "brand" | "location" | "category";
-}
 
 export default function FilterCheckboxItem({
   id,
@@ -45,7 +41,6 @@ export default function FilterCheckboxItem({
           });
         }
       }
-
       case "category": {
         if (e.target.checked) {
           setFilter({
@@ -62,7 +57,6 @@ export default function FilterCheckboxItem({
           });
         }
       }
-
       case "location": {
         if (e.target.checked) {
           setFilter({

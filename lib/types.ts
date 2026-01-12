@@ -112,3 +112,9 @@ export type TCustomerColumn = {
   email: string;
   total_transactions: number;
 };
+
+export interface FilterCheckboxItemProps {
+  id: string;
+  value: string;
+  type?: "stock" | "brand" | "location" | "category";
+}
