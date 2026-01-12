@@ -57,4 +57,19 @@ async function getBrands() {
   }
 }
 
-export { getCategories, getProducts, getBrands };
+async function getLocations() {
+  try {
+    const location = await prisma.location.findMany({
+      orderBy: {
+        id: "asc",
+      },
+      take: 3,
+    });
+    return location;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export { getCategories, getProducts, getBrands, getLocations };
