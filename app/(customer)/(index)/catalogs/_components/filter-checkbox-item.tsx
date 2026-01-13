@@ -77,6 +77,7 @@ export default function FilterCheckboxItem({
         break;
     }
   };
+  
   return (
     <label
       htmlFor={id + value}

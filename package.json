@@ -31,6 +31,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@supabase/supabase-js": "^2.89.0",
     "@tabler/icons-react": "^3.36.0",
+    "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-table": "^8.21.3",
     "@types/bcryptjs": "^2.4.6",
     "@vercel/blob": "^2.0.0",
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tanstack/eslint-plugin-query": "^5.91.2",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20.19.27",
     "@types/pg": "^8.16.0",

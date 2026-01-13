@@ -8,14 +8,13 @@ export default function SearchBar() {
 
   useEffect(() => {
     const debounceInput = setTimeout(() => {
-      console.log(query);
       setFilter({
         search: query,
       });
     }, 1500);
     return () => clearTimeout(debounceInput);
   }, [query]);
-  
+
   return (
     <div
       id="title"
@@ -42,13 +41,13 @@ export default function SearchBar() {
         className="max-w-120 w-full bg-white flex items-center gap-2.5 rounded-full border border-[#E5E5E5] p-[12px_20px] focus-within:ring-2 focus-within:ring-[#FFC736] transition-all duration-300"
       >
         <input
-          type="text"
+          type="search"
           id=""
           name=""
           className="appearance-none outline-none w-full placeholder:text-[#616369] placeholder:font-normal font-semibold text-black"
           placeholder="Search product by name, brand, category"
           onChange={(e) => {
-            console.log(e.target.value);
+            setQuery(e.target.value);
           }}
         />
         <button type="submit" className="flex shrink-0">
