@@ -50,9 +50,9 @@ export default function SearchBar() {
             setQuery(e.target.value);
           }}
         />
-        <button type="submit" className="flex shrink-0">
+        <span className="flex shrink-0">
           <img src="assets/icons/search-normal.svg" alt="icon" />
-        </button>
+        </span>
       </form>
     </div>
   );

@@ -11,3 +11,7 @@ export type TProduct = {
   category_name: string;
   price: number;
 };
+
+export interface CardProductProps {
+  item: TProduct;
+}

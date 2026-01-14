@@ -94,11 +94,13 @@ export async function POST(request: Request) {
       return {
         id: product.id,
         category_name: product.category.name,
-        image_url: getImageUrl(product.image[0]),
+        image_url: product.image,
         name: product.name,
         price: Number(product.price),
       };
     });
+
+    console.log(response);
 
     return Response.json(response);
   } catch (error) {
