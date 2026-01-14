@@ -4,11 +4,15 @@ import { rupiahFormat } from "@/lib/utils";
 
 export default async function OtherProducts() {
   const products = await getProducts();
- 
+
   return (
     <div className="grid grid-cols-5 gap-[30px]">
       {products.map((prod) => (
-        <Link key={prod.id} href="" className="product-card">
+        <Link
+          key={prod.id}
+          href={`/detail-product/${prod.id}`}
+          className="product-card"
+        >
           <div className="bg-white flex flex-col gap-[24px] p-5 rounded-[20px] ring-1 ring-[#E5E5E5] hover:ring-2 hover:ring-[#FFC736] transition-all duration-300 w-full">
             <div className="w-full h-[90px] flex shrink-0 items-center justify-center overflow-hidden">
               <img

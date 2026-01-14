@@ -16,6 +16,10 @@ export interface CardProductProps {
   item: TProduct;
 }
 
-export type TParams = {
-  id: number;
+// export type TParams = {
+//   id: number;
+// };
+
+export type DetailProductProps = {
+  params: Promise<{ id: number }>;
 };

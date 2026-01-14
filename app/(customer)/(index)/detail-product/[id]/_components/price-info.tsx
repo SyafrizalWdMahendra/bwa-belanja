@@ -1,9 +1,16 @@
-import { TParams } from "@/types";
 import { getProductById } from "../lib/data";
 import { rupiahFormat } from "@/lib/utils";
+import { DetailProductProps } from "@/types";
+import { notFound } from "next/navigation";
 
-export default async function PriceInfo({ id }: TParams) {
-  const product = await getProductById(id);
+export default async function PriceInfo({ params }: DetailProductProps) {
+  const { id } = await params;
+
+  const product = await getProductById(Number(id));
+
+  if (!product) {
+    return notFound();
+  }
 
   return (
     <div className="w-[302px] flex flex-col shrink-0 gap-5 h-fit">

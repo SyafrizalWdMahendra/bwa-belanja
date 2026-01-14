@@ -1,13 +1,22 @@
 import React from "react";
 import NavHeader from "../../_components/nav-header";
-import { TProduct } from "@/types";
+import { DetailProductProps } from "@/types";
 import { getProductById } from "./lib/data";
 import PriceInfo from "./_components/price-info";
 import OtherProducts from "./_components/other-products";
 import Testimonials from "./_components/testimonials";
+import { notFound, redirect } from "next/navigation";
 
-export default async function DetailProductPage({ id }: TProduct) {
-  const product = await getProductById(id);
+export default async function DetailProductPage({
+  params,
+}: DetailProductProps) {
+  const { id } = await params;
+
+  const product = await getProductById(Number(id));
+
+  if (!product) {
+    return notFound();
+  }
 
   return (
     <div className="bg-white text-black">
@@ -120,7 +129,7 @@ export default async function DetailProductPage({ id }: TProduct) {
             <Testimonials />
           </div>
         </div>
-        <PriceInfo id={id} />
+        <PriceInfo params={params} />
       </div>
       <div
         id="recommedations"

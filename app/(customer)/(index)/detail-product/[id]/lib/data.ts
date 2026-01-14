@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 export async function getProductById(id: number) {
   try {
-    const product = await prisma.product.findFirst({
+    const product = await prisma.product.findUnique({
       where: {
         id: id,
       },
@@ -21,15 +21,9 @@ export async function getProductById(id: number) {
       },
     });
 
-    if (!product) {
-      return redirect("/");
-    }
-
-    return {
-      ...product,
-    };
+    return product;
   } catch (error) {
-    console.log(error);
+    console.error("Database Error:", error);
     return null;
   }
 }
