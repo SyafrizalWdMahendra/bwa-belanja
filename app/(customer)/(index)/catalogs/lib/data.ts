@@ -1,4 +1,5 @@
 import { TFilter } from "@/hooks/use-filter";
+import prisma from "@/lib/prisma";
 import { TProduct } from "@/types";
 
 export async function fetchProduct(body?: TFilter): Promise<TProduct[]> {

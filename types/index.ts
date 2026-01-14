@@ -15,3 +15,7 @@ export type TProduct = {
 export interface CardProductProps {
   item: TProduct;
 }
+
+export type TParams = {
+  id: number;
+};

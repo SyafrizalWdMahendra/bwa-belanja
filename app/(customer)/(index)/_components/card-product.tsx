@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function CardProduct({ item }: CardProductProps) {
   return (
-    <Link href="details.html" className="product-card">
+    <Link href={`/detail-product/${item.id}`} className="product-card">
       <div className="bg-white flex flex-col gap-6 p-5 rounded-[20px] ring-1 ring-[#E5E5E5] hover:ring-2 hover:ring-[#FFC736] transition-all duration-300 w-full">
         <div className="w-full h-22.5 flex shrink-0 items-center justify-center overflow-hidden">
           <img
