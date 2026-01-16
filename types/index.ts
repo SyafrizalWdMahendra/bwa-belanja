@@ -23,3 +23,13 @@ export interface CardProductProps {
 export type DetailProductProps = {
   params: Promise<{ id: number }>;
 };
+
+export type TCart = TProduct & { quantity: number };
+
+export interface CartState {
+  products: TCart[];
+  addProduct: (cart: TCart) => void;
+  increaseQuantity: (id: number) => void;
+  decreaseQuantity: (id: number) => void;
+  removeProduct: (id: number) => void;
+}

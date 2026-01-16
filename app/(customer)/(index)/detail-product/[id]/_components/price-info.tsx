@@ -1,16 +1,29 @@
-import { getProductById } from "../lib/data";
+"use client";
+import { useCart } from "@/hooks/use-cart";
 import { rupiahFormat } from "@/lib/utils";
-import { DetailProductProps } from "@/types";
-import { notFound } from "next/navigation";
+import { TCart, TProduct } from "@/types";
+import { useRouter } from "next/navigation";
 
-export default async function PriceInfo({ params }: DetailProductProps) {
-  const { id } = await params;
+interface PriceInfoProp {
+  item: TProduct;
+  isLogin: boolean;
+}
 
-  const product = await getProductById(Number(id));
+export default function PriceInfo({ item, isLogin }: PriceInfoProp) {
+  const { addProduct } = useCart();
 
-  if (!product) {
-    return notFound();
-  }
+  const router = useRouter();
+
+  const checkout = () => {
+    const newCart: TCart = {
+      ...item,
+      quantity: 1,
+    };
+
+    addProduct(newCart);
+
+    router.push("/carts");
+  };
 
   return (
     <div className="w-[302px] flex flex-col shrink-0 gap-5 h-fit">
@@ -18,7 +31,7 @@ export default async function PriceInfo({ params }: DetailProductProps) {
         <div className="flex flex-col gap-1">
           <p className="font-semibold">Brand New</p>
           <p className="font-bold text-[28px] leading-[48px]">
-            {rupiahFormat(product?.price ?? 0)}
+            {rupiahFormat(item.price ?? 0)}
           </p>
         </div>
         <div className="flex flex-col gap-4">
@@ -30,12 +43,14 @@ export default async function PriceInfo({ params }: DetailProductProps) {
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <a
-            href="cart.html"
-            className="p-[12px_24px] bg-[#0D5CD7] rounded-full text-center font-semibold text-white"
+          <button
+            disabled={isLogin == false}
+            type="button"
+            onClick={checkout}
+            className="p-[12px_24px] bg-[#0D5CD7] rounded-full text-center font-semibold text-white disabled:opacity-60"
           >
             Add to Cart
-          </a>
+          </button>
           <a
             href=""
             className="p-[12px_24px] bg-white rounded-full text-center font-semibold border border-[#E5E5E5]"

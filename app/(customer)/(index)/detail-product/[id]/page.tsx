@@ -6,10 +6,12 @@ import PriceInfo from "./_components/price-info";
 import OtherProducts from "./_components/other-products";
 import Testimonials from "./_components/testimonials";
 import { notFound, redirect } from "next/navigation";
+import { getUser } from "@/lib/auth";
 
 export default async function DetailProductPage({
   params,
 }: DetailProductProps) {
+  const { session } = await getUser();
   const { id } = await params;
 
   const product = await getProductById(Number(id));
@@ -129,7 +131,16 @@ export default async function DetailProductPage({
             <Testimonials />
           </div>
         </div>
-        <PriceInfo params={params} />
+        <PriceInfo
+          isLogin={session ? true : false}
+          item={{
+            id: (await params).id,
+            image_url: "",
+            name: "",
+            category_name: "",
+            price: 0,
+          }}
+        />
       </div>
       <div
         id="recommedations"
