@@ -135,10 +135,10 @@ export default async function DetailProductPage({
           isLogin={session ? true : false}
           item={{
             id: (await params).id,
-            image_url: "",
-            name: "",
+            image_url: product.image,
+            name: product.name,
             category_name: "",
-            price: 0,
+            price: product.price,
           }}
         />
       </div>
