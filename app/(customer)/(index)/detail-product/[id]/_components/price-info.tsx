@@ -47,7 +47,7 @@ export default function PriceInfo({ item, isLogin }: PriceInfoProp) {
             disabled={isLogin == false}
             type="button"
             onClick={checkout}
-            className="p-[12px_24px] bg-[#0D5CD7] rounded-full text-center font-semibold text-white disabled:opacity-70 hover:cursor-pointer"
+            className="p-[12px_24px] bg-[#0D5CD7] rounded-full text-center font-semibold text-white disabled:opacity-70 enabled:cursor-pointer disabled:cursor-not-allowed"
           >
             Add to Cart
           </button>
