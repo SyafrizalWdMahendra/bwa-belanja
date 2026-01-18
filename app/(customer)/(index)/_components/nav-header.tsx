@@ -1,5 +1,6 @@
 import React from "react";
 import { AuthSession } from "../../(auth)/_components/auth-session";
+import Link from "next/link";
 
 export default function NavHeader() {
   return (
@@ -9,7 +10,7 @@ export default function NavHeader() {
       </div>
       <ul className="flex items-center gap-7.5">
         <li className="hover:font-bold hover:text-[#FFC736] transition-all duration-300 font-bold text-[#FFC736]">
-          <a href="index.html">Shop</a>
+          <Link href="/catalogs">Shop</Link>
         </li>
         <li className="hover:font-bold hover:text-[#FFC736] transition-all duration-300 text-white">
           <a href="">Categories</a>
