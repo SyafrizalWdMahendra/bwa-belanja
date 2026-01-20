@@ -187,7 +187,7 @@ export default function CheckoutForm() {
           </div>
           <div className="flex flex-col gap-1">
             <p className="font-semibold">Grand Total</p>
-            <p className="font-bold text-[32px] leading-[48px] underline text-[#0D5CD7]">
+            <p className="font-bold text-[32px] leading-[48px] text-[#0D5CD7]">
               {rupiahFormat(grandTotal)}
             </p>
           </div>

@@ -2,37 +2,22 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
+  const body = await request.json();
+
   try {
-    const body = await request.json();
+    const code = body.data.reference_id;
 
-    const referenceId = body?.data?.reference_id;
-    const paymentStatus = body?.data?.status;
-
-    if (!referenceId || !paymentStatus) {
-      return NextResponse.json({ message: "Invalid payload" }, { status: 400 });
-    }
-
-    const status = paymentStatus === "SUCCEEDED" ? "success" : "failed";
-
-    await prisma.order.upsert({
+    await prisma.order.update({
       where: {
-        code: referenceId,
+        code: code,
       },
-      update: {
-        status,
-      },
-      create: {
-        code: referenceId,
-        status,
-        total: body?.data?.amount ?? 0,
-        userId: body?.data?.user_id,
+      data: {
+        status: body.data.status === "SUCCEEDED" ? "success" : "failed",
       },
     });
-
-    return NextResponse.json({ status: true });
   } catch (error) {
-    console.error("WEBHOOK ERROR:", error);
-
-    return NextResponse.json({ status: true });
+    console.log(error);
   }
+
+  return NextResponse.json({ status: true });
 }
